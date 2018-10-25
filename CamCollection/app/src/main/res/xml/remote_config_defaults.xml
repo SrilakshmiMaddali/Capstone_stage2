@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+    <entry>
+        <key>copy_to_clipboard</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>number_of_hash_iterations</key>
+        <value>1000</value>
+    </entry>
+</defaultsMap>
+    <!-- END xml_defaults -->

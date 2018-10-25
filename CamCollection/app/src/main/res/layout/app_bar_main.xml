@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="sm.com.passwordwallet.MainActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <include layout="@layout/content_main" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/plus"
+        app:layout_behavior="sm.com.camcollection.util.ScrollAwareFABBehavior" />
+
+    <LinearLayout
+        android:id="@+id/insert_alert"
+        android:layout_width="wrap_content"
+        android:layout_height="50sp"
+        android:layout_margin="@dimen/fab_margin"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="70sp"
+        android:visibility="gone"
+        app:layout_anchor="@id/add_fab"
+        app:layout_anchorGravity="bottom|left">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/initial_category"
+            android:textColor="@color/colorSecondaryDark"
+            android:textStyle="bold|italic" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_keyboard_arrow_right_black_24sp"
+            android:tint="@color/colorSecondaryDark" />
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
