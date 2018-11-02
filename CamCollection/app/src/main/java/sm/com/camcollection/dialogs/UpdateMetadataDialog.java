@@ -72,39 +72,11 @@ public class UpdateMetadataDialog extends DialogFragment {
 
         Bundle bundle = getArguments();
 
-        mPosition = bundle.getInt("mPosition");
+        mPosition = bundle.getInt("position");
         hash_algorithm = bundle.getString("hash_algorithm");
         bindToDevice_enabled = bundle.getBoolean("bindToDevice_enabled");
-        DatabaseTask.GetMetaDataById task1 = new DatabaseTask.GetMetaDataById(new DatabaseTask.Callback() {
-            @Override
-            public void onPostResult(List<MetaDataEntity> entities) {
-
-            }
-
-            @Override
-            public void onPostResult(MetaDataEntity entity) {
-                mMetaDataEntity = entity;
-            }
-
-            @Override
-            public void onPostResult() {}
-        });
-        task1.execute(mPosition);
-        DatabaseTask.GetMetaDataById task2 = new DatabaseTask.GetMetaDataById(new DatabaseTask.Callback() {
-            @Override
-            public void onPostResult(List<MetaDataEntity> entities) {
-
-            }
-
-            @Override
-            public void onPostResult(MetaDataEntity entity) {
-                mOldMetaDataEntity = entity;
-            }
-
-            @Override
-            public void onPostResult() {}
-        });
-        task2.execute(mPosition);
+        mMetaDataEntity = bundle.getParcelable("entity");
+        mOldMetaDataEntity = mMetaDataEntity;
         number_iterations = bundle.getInt("number_iterations");
 
         builder.setView(mRootView);

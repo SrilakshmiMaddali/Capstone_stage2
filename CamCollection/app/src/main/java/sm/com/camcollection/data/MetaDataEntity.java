@@ -3,10 +3,12 @@ package sm.com.camcollection.data;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 @Entity(tableName = "pass_data_table")
-public class MetaDataEntity {
+public class MetaDataEntity implements Parcelable{
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -51,6 +53,48 @@ public class MetaDataEntity {
         this.hasLetterLow = hasLetterLow;
         this.pwVersion = pwVersion;
     }
+
+    public MetaDataEntity(Parcel in) {
+        this.id = in.readInt();
+        this.positionId = in.readInt();
+        this.domain = in.readString();
+        this.userName = in.readString();
+        this.length = in.readInt();
+        this.hasNumber = in.readInt();
+        this.hasSymbols = in.readInt();
+        this.hasLettersUp = in.readInt();
+        this.hasLetterLow = in.readInt();
+        this.pwVersion = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(positionId);
+        dest.writeString(domain);
+        dest.writeString(userName);
+        dest.writeInt(length);
+        dest.writeInt(hasNumber);
+        dest.writeInt(hasSymbols);
+        dest.writeInt(hasLettersUp);
+        dest.writeInt(hasLetterLow);
+        dest.writeInt(pwVersion);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public MetaDataEntity createFromParcel(Parcel in) {
+            return new MetaDataEntity(in);
+        }
+
+        public MetaDataEntity[] newArray(int size) {
+            return new MetaDataEntity[size];
+        }
+    };
 
     @NonNull
     public int getId() {

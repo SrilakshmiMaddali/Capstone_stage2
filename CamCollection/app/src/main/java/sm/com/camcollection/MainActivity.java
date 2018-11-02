@@ -191,7 +191,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Log.d("Main Activity", Integer.toString(position));
-                        Bundle bundle = new Bundle();
+                        final Bundle bundle = new Bundle();
 
                         //Gets ID for look up in DB
                         MetaDataEntity temp = mList.get(position);
@@ -201,10 +201,27 @@ public class MainActivity extends BaseActivity {
                         bundle.putInt("number_iterations", number_iterations);
                         bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
 
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        UpdateMetadataDialog updateMetadataDialog = new UpdateMetadataDialog();
-                        updateMetadataDialog.setArguments(bundle);
-                        updateMetadataDialog.show(fragmentManager, "UpdateMetadataDialog");
+                        DatabaseTask.GetMetaDataById task2 = new DatabaseTask.GetMetaDataById(new DatabaseTask.Callback() {
+                            @Override
+                            public void onPostResult(List<MetaDataEntity> entities) {
+
+                            }
+
+                            @Override
+                            public void onPostResult(MetaDataEntity entity) {
+                                bundle.putParcelable("entity", entity);
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                UpdateMetadataDialog updateMetadataDialog = new UpdateMetadataDialog();
+                                updateMetadataDialog.setArguments(bundle);
+                                updateMetadataDialog.show(fragmentManager, "UpdateMetadataDialog");
+                            }
+
+                            @Override
+                            public void onPostResult() {}
+                        });
+                        task2.execute(temp.getId());
+
+
                     }
                 })
         );
