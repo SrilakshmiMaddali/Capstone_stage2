@@ -21,13 +21,13 @@ public interface MetaDataDao {
     @Query("SELECT * FROM pass_data_table")
     List<MetaDataEntity> getAll();
 
-    @Query("SELECT * FROM pass_data_table WHERE id = :metaDataId")
+    @Query("SELECT * FROM pass_data_table WHERE positionId = :metaDataId")
     MetaDataEntity getMetaDatabyId(int metaDataId);
 
     @Update
     void updateMetaData (MetaDataEntity metaDataEntity);
 
-    @Query("DELETE FROM pass_data_table WHERE id = :metaDataId")
+    @Query("DELETE FROM pass_data_table WHERE positionId = :metaDataId")
     void deleteMetaData(int metaDataId);
 
     @Delete

@@ -203,7 +203,7 @@ public class UpdatePasswordDialog extends DialogFragment {
             final TextView textViewOldPassword = (TextView) mRootView.findViewById(R.id.textViewOldPassword);
             final TextView textViewNewPassword = (TextView) mRootView.findViewById(R.id.textViewNewPassword);
 
-            String deviceID;
+            final String deviceID;
 
             if (bindToDevice_enabled) {
                 deviceID = Settings.Secure.getString(getContext().getContentResolver(),
@@ -247,36 +247,34 @@ public class UpdatePasswordDialog extends DialogFragment {
                 @Override
                 public void onPostResult(MetaDataEntity entity) {
                     mMetaDataEntity = entity;
+                    //pack new parameters to String-Array
+                    String[] paramsNew = new String[12];
+                    paramsNew[0] = mMetaDataEntity.getDomain();
+                    paramsNew[1] = mMetaDataEntity.getUserName();
+                    paramsNew[2] = editTextUpdateMasterpassword.getText().toString();
+                    paramsNew[3] = deviceID;
+                    paramsNew[4] = String.valueOf(mMetaDataEntity.getPwVersion());
+                    paramsNew[5] = String.valueOf(number_iterations);
+                    paramsNew[6] = hashAlgorithm;
+                    paramsNew[7] = String.valueOf(mMetaDataEntity.getHasSymbols());
+                    paramsNew[8] = String.valueOf(mMetaDataEntity.getHasLetterLow());
+                    paramsNew[9] = String.valueOf(mMetaDataEntity.getHasLettersUp());
+                    paramsNew[10] = String.valueOf(mMetaDataEntity.getHasNumber());
+                    paramsNew[11] = String.valueOf(mMetaDataEntity.getLength());
+
+                    new PasswordGeneratorTask() {
+                        @Override
+                        protected void onPostExecute(String result) {
+                            textViewNewPassword.setText(result);
+                            spinnerNew.setVisibility(View.GONE);
+                        }
+                    }.execute(paramsNew);
                 }
 
                 @Override
                 public void onPostResult() {}
             });
             task.execute(position);
-
-            //pack new parameters to String-Array
-            String[] paramsNew = new String[12];
-            paramsNew[0] = mMetaDataEntity.getDomain();
-            paramsNew[1] = mMetaDataEntity.getUserName();
-            paramsNew[2] = editTextUpdateMasterpassword.getText().toString();
-            paramsNew[3] = deviceID;
-            paramsNew[4] = String.valueOf(mMetaDataEntity.getPwVersion());
-            paramsNew[5] = String.valueOf(number_iterations);
-            paramsNew[6] = hashAlgorithm;
-            paramsNew[7] = String.valueOf(mMetaDataEntity.getHasSymbols());
-            paramsNew[8] = String.valueOf(mMetaDataEntity.getHasLetterLow());
-            paramsNew[9] = String.valueOf(mMetaDataEntity.getHasLettersUp());
-            paramsNew[10] = String.valueOf(mMetaDataEntity.getHasNumber());
-            paramsNew[11] = String.valueOf(mMetaDataEntity.getLength());
-
-            new PasswordGeneratorTask() {
-                @Override
-                protected void onPostExecute(String result) {
-                    textViewNewPassword.setText(result);
-                    spinnerNew.setVisibility(View.GONE);
-                }
-            }.execute(paramsNew);
-
         }
     }
 

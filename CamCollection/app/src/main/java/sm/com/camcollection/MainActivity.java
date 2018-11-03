@@ -164,7 +164,7 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onItemClick(View view, int position) {
-                        Bundle bundle = new Bundle();
+                        final Bundle bundle = new Bundle();
 
                         //Gets ID for look up in DB
                         MetaDataEntity temp = mAdapter.getItem(position);
@@ -175,10 +175,26 @@ public class MainActivity extends BaseActivity {
                         bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
                         bundle.putInt("number_iterations", number_iterations);
 
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        GeneratePasswordDialog generatePasswordDialog = new GeneratePasswordDialog();
-                        generatePasswordDialog.setArguments(bundle);
-                        generatePasswordDialog.show(fragmentManager, "GeneratePasswordDialog");
+
+
+                        DatabaseTask.GetMetaDataById task = new DatabaseTask.GetMetaDataById(new DatabaseTask.Callback() {
+                            @Override
+                            public void onPostResult(List<MetaDataEntity> entities) {
+
+                            }
+
+                            @Override
+                            public void onPostResult(MetaDataEntity entity) {
+                                bundle.putParcelable("entity", entity);
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                GeneratePasswordDialog generatePasswordDialog = new GeneratePasswordDialog();
+                                generatePasswordDialog.setArguments(bundle);
+                                generatePasswordDialog.show(fragmentManager, "GeneratePasswordDialog");
+                            }
+                            @Override
+                            public void onPostResult() {}
+                        });
+                        task.execute(temp.getId());
 
                         /*PrefManager prefManager = new PrefManager(getBaseContext());
                         if (prefManager.isFirstTimeGen()) {
@@ -196,7 +212,7 @@ public class MainActivity extends BaseActivity {
                         //Gets ID for look up in DB
                         MetaDataEntity temp = mList.get(position);
 
-                        bundle.putInt("position", temp.getId());
+                        bundle.putInt("position", position+1);
                         bundle.putString("hash_algorithm", hash_algorithm);
                         bundle.putInt("number_iterations", number_iterations);
                         bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
@@ -219,7 +235,7 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onPostResult() {}
                         });
-                        task2.execute(temp.getId());
+                        task2.execute(position+1);
 
 
                     }
@@ -259,7 +275,7 @@ public class MainActivity extends BaseActivity {
                                             mHandler.sendEmptyMessage(REFRESH);
                                         }
                                     });
-                                    task.execute(position+1);
+                                    task.execute(position);
                                 }
                             }
                         });

@@ -7,14 +7,14 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 
-@Database(entities = {MetaDataEntity.class}, version = 2, exportSchema=false)
+@Database(entities = {MetaDataEntity.class}, version = 3, exportSchema=false)
 public abstract class MetaDataDatabase extends RoomDatabase {
 
     public abstract MetaDataDao MetaDataDao();
 
     private static volatile MetaDataDatabase INSTANCE;
 
-    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+    static final Migration MIGRATION_1_2 = new Migration(2, 3) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             // Since we didn't alter the table, there's nothing else to do here.

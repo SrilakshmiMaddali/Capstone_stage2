@@ -83,29 +83,12 @@ public class GeneratePasswordDialog extends DialogFragment {
         bindToDevice_enabled = bundle.getBoolean("bindToDevice_enabled");
         hashAlgorithm = bundle.getString("hash_algorithm");
         number_iterations = bundle.getInt("number_iterations");
+        mMetaDataEntity = bundle.getParcelable("entity");
         visibility = false;
 
         mSpinner = (ProgressBar) mRootView.findViewById(R.id.progressBar);
         mSpinner.setVisibility(View.GONE);
-
-        DatabaseTask.GetMetaDataById task = new DatabaseTask.GetMetaDataById(new DatabaseTask.Callback() {
-            @Override
-            public void onPostResult(List<MetaDataEntity> entities) {
-
-            }
-
-            @Override
-            public void onPostResult(MetaDataEntity entity) {
-                mMetaDataEntity = entity;
-                if (mMetaDataEntity != null) {
-                    create(builder);
-                }
-            }
-            @Override
-            public void onPostResult() {}
-        });
-        task.execute(mPosition);
-
+        create(builder);
         return builder.create();
     }
 
@@ -242,7 +225,8 @@ public class GeneratePasswordDialog extends DialogFragment {
         params[8] = String.valueOf(mMetaDataEntity.getHasLetterLow());
         params[9] = String.valueOf(mMetaDataEntity.getHasLettersUp());
         params[10] = String.valueOf(mMetaDataEntity.getHasNumber());
-        params[11] = String.valueOf(mMetaDataEntity.getLength());;new PasswordGeneratorTask() {
+        params[11] = String.valueOf(mMetaDataEntity.getLength());
+        new PasswordGeneratorTask() {
             @Override
             protected void onPostExecute(String result) {
                 TextView textViewPassword = (TextView) mRootView.findViewById(R.id.textViewPassword);

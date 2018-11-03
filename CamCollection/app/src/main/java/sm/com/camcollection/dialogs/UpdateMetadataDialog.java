@@ -227,7 +227,7 @@ public class UpdateMetadataDialog extends DialogFragment {
                 tempIteration = Integer.parseInt(iteration.getText().toString());
             }
             DatabaseTask.updateMetaDataTask task = new DatabaseTask.updateMetaDataTask();
-            task.equals(new MetaDataEntity(mPosition, mPosition,
+            task.execute(new MetaDataEntity(mPosition, mPosition,
                     domain.getText().toString(),
                     username.getText().toString(),
                     seekBarLength.getProgress() + 4,
@@ -240,7 +240,7 @@ public class UpdateMetadataDialog extends DialogFragment {
             Toast.makeText(getActivity(), getString(R.string.added_message), Toast.LENGTH_SHORT).show();
 
             Bundle bundle = new Bundle();
-            bundle.putInt("mPosition", mPosition);
+            bundle.putInt("position", mPosition);
             bundle.putString("hash_algorithm", hash_algorithm);
             bundle.putInt("number_iterations", number_iterations);
             bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
