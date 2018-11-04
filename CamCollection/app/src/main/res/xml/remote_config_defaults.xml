@@ -2,6 +2,10 @@
 <!-- START xml_defaults -->
 <defaultsMap>
     <entry>
+        <key>remove_ads</key>
+        <value>false</value>
+    </entry>
+    <entry>
         <key>copy_to_clipboard</key>
         <value>false</value>
     </entry>

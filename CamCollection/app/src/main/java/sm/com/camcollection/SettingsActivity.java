@@ -109,7 +109,6 @@ public class SettingsActivity extends BaseActivity {
             addPreferencesFromResource(R.xml.pref_general);
 
             bindPreferenceSummaryToValue(findPreference("hash_algorithm"));
-
             Preference reset = findPreference("pref_reset_list");
             reset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override

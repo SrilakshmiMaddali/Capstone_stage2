@@ -1,17 +1,6 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="main_preferences">
-        <SwitchPreference
-            android:title="@string/title_clipboard"
-            android:id="@+id/pref_clipboard_switch"
-            android:key="clipboard_enabled"
-            android:summary="@string/summary_clipboard"
-            android:defaultValue="false"/>
-        <Preference
-            android:title="@string/title_reset_list"
-            android:id="@+id/pref_reset_list"
-            android:key="pref_reset_list" />
-
     <PreferenceCategory
         android:title="@string/title_expert_mode">
 
@@ -24,5 +13,10 @@
             android:summary="@string/default_hash_algorithm">
         </ListPreference>
     </PreferenceCategory>
+
+    <Preference
+        android:title="@string/title_reset_list"
+        android:id="@+id/pref_reset_list"
+        android:key="pref_reset_list" />
 
 </PreferenceScreen>

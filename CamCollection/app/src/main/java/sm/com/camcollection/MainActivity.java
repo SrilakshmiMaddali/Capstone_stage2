@@ -51,6 +51,7 @@ public class MainActivity extends BaseActivity {
     private MetaDataDatabase mDatabase;
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     private boolean clipboard_enabled;
+    private boolean remove_ads;
     private boolean bindToDevice_enabled;
     private String hash_algorithm;
     private int number_iterations;
@@ -61,6 +62,7 @@ public class MainActivity extends BaseActivity {
     // remote config keys
     private static final String COPY_TO_CLIPBOARD = "copy_to_clipboard";
     private static final String NUMBEROF_HASH_ITERATIONS = "number_of_hash_iterations";
+    private static final String REMOVE_ADS = "remove_ads";
 
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
 
@@ -370,9 +372,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void hints(int position) {
-
         Animation anim = new AlphaAnimation(0.0f, 1.0f);
-
         if (mList.size() == 0 || position == 0) {
 
             initialAlert.setVisibility(View.VISIBLE);
@@ -386,13 +386,10 @@ public class MainActivity extends BaseActivity {
             initialAlert.setVisibility(View.GONE);
             initialAlert.clearAnimation();
         }
-
     }
 
     public void loadPreferences() {
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
         clipboard_enabled = sharedPreferences.getBoolean("clipboard_enabled", false);
         bindToDevice_enabled = sharedPreferences.getBoolean("bindToDevice_enabled", false);
         hash_algorithm = sharedPreferences.getString("hash_algorithm", "SHA256");
@@ -401,8 +398,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void fetchRemoteConfig() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean copyToClipboard = mFirebaseRemoteConfig.getBoolean(COPY_TO_CLIPBOARD);
+        sharedPreferences.edit().putBoolean("clipboard_enabled", copyToClipboard).commit();
         String numberHashIterations = mFirebaseRemoteConfig.getString(NUMBEROF_HASH_ITERATIONS);
+        remove_ads = mFirebaseRemoteConfig.getBoolean(REMOVE_ADS);
+
 
         Log.d(APP_TAG, MainActivity.class.getSimpleName() +" "+copyToClipboard);
         Log.d(APP_TAG, MainActivity.class.getSimpleName() +" "+numberHashIterations);
@@ -445,7 +446,9 @@ public class MainActivity extends BaseActivity {
         // TODO: Replace sample app ID with your AdMob app ID
         //MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
         //Load the add
-        AdRequest adRequest = new AdRequest.Builder().build();
-        ((AdView)findViewById(R.id.adView)).loadAd(adRequest);
+        if (!remove_ads) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            ((AdView) findViewById(R.id.adView)).loadAd(adRequest);
+        }
     }
 }

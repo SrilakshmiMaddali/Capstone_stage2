@@ -22,7 +22,9 @@ import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -79,7 +81,8 @@ public class GeneratePasswordDialog extends DialogFragment {
         Bundle bundle = getArguments();
 
         mPosition = bundle.getInt("position");
-        clipboard_enabled = bundle.getBoolean("clipboard_enabled");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        clipboard_enabled = sharedPreferences.getBoolean("clipboard_enabled", false);
         bindToDevice_enabled = bundle.getBoolean("bindToDevice_enabled");
         hashAlgorithm = bundle.getString("hash_algorithm");
         number_iterations = bundle.getInt("number_iterations");
