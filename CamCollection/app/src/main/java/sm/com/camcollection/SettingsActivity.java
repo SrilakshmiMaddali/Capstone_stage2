@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import sm.com.camcollection.data.DatabaseTask;
 import sm.com.camcollection.data.MetaDataDao;
 import sm.com.camcollection.data.MetaDataDatabase;
 import sm.com.camcollection.dialogs.BenchmarkDialog;
@@ -107,29 +108,7 @@ public class SettingsActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
 
-            bindPreferenceSummaryToValue(findPreference("hash_iterations"));
             bindPreferenceSummaryToValue(findPreference("hash_algorithm"));
-
-            Preference benchmark = findPreference("benchmark");
-            benchmark.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-
-                    Bundle bundle = new Bundle();
-
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-                    bundle.putInt("number_iterations", Integer.parseInt(preferences.getString("hash_iterations", "1000")));
-                    bundle.putString("hash_algorithm", preferences.getString("hash_algorithm", "SHA256"));
-
-                    FragmentManager fragmentManager = getActivity().getFragmentManager();
-                    BenchmarkDialog benchmarkDialog = new BenchmarkDialog();
-                    benchmarkDialog.setArguments(bundle);
-                    benchmarkDialog.show(fragmentManager, "BenchmarkDialog");
-
-                    return true;
-                }
-            });
 
             Preference reset = findPreference("pref_reset_list");
             reset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -142,8 +121,8 @@ public class SettingsActivity extends BaseActivity {
                             .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    MetaDataDao dao = MetaDataDatabase.getDatabase(getActivity()).MetaDataDao();
-                                    dao.deleteAll();
+                                    DatabaseTask.DeleteAllTask task = new DatabaseTask.DeleteAllTask();
+                                    task.execute();
                                     Toast.makeText(getActivity(), getString(R.string.delete_dialog_success), Toast.LENGTH_SHORT).show();
                                 }
                             })
