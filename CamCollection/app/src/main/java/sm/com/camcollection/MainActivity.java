@@ -168,6 +168,9 @@ public class MainActivity extends BaseActivity {
 
                         //Gets ID for look up in DB
                         MetaDataEntity temp = mAdapter.getItem(position);
+                        if(temp == null){
+                            return;
+                        }
 
                         bundle.putInt("position", temp.getId());
                         bundle.putString("hash_algorithm", hash_algorithm);
@@ -186,10 +189,12 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onPostResult(MetaDataEntity entity) {
                                 bundle.putParcelable("entity", entity);
-                                FragmentManager fragmentManager = getSupportFragmentManager();
-                                GeneratePasswordDialog generatePasswordDialog = new GeneratePasswordDialog();
-                                generatePasswordDialog.setArguments(bundle);
-                                generatePasswordDialog.show(fragmentManager, "GeneratePasswordDialog");
+                                if (entity != null) {
+                                    FragmentManager fragmentManager = getSupportFragmentManager();
+                                    GeneratePasswordDialog generatePasswordDialog = new GeneratePasswordDialog();
+                                    generatePasswordDialog.setArguments(bundle);
+                                    generatePasswordDialog.show(fragmentManager, "GeneratePasswordDialog");
+                                }
                             }
                             @Override
                             public void onPostResult() {}
