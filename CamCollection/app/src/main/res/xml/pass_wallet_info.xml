@@ -2,7 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialKeyguardLayout="@layout/pass_wallet"
     android:initialLayout="@layout/pass_wallet"
-    android:minHeight="180dp"
+    android:minHeight="60dp"
     android:minWidth="110dp"
     android:previewImage="@drawable/example_appwidget_preview"
     android:resizeMode="horizontal|vertical"
