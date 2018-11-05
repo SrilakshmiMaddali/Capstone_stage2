@@ -46,9 +46,7 @@ public class MainActivity extends BaseActivity {
     private ListViewDataAdapter mAdapter;
     private List<MetaDataEntity> mList;
     private RecyclerView mRecyclerView;
-    private List<MetaDataEntity> recycerList;
 
-    private MetaDataDatabase mDatabase;
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     private boolean clipboard_enabled;
     private boolean remove_ads;
@@ -79,16 +77,13 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    private List<MetaDataEntity> mFilteredMetaDataList;
-
     private LinearLayout initialAlert;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MobileAds.initialize(this, "ca-app-pub-6595532125576760~1922912103");
-        mDatabase = MetaDataDatabase.getDatabase(this);
-        DatabaseTask.init();
+        DatabaseTask.init(this);
 
         PrefManager prefManager = new PrefManager(this);
 
@@ -402,6 +397,7 @@ public class MainActivity extends BaseActivity {
         boolean copyToClipboard = mFirebaseRemoteConfig.getBoolean(COPY_TO_CLIPBOARD);
         sharedPreferences.edit().putBoolean("clipboard_enabled", copyToClipboard).commit();
         String numberHashIterations = mFirebaseRemoteConfig.getString(NUMBEROF_HASH_ITERATIONS);
+        // remove ads, is to control ads remotely.
         remove_ads = mFirebaseRemoteConfig.getBoolean(REMOVE_ADS);
 
 
@@ -449,6 +445,8 @@ public class MainActivity extends BaseActivity {
         if (!remove_ads) {
             AdRequest adRequest = new AdRequest.Builder().build();
             ((AdView) findViewById(R.id.adView)).loadAd(adRequest);
+        } else {
+            ((AdView) findViewById(R.id.adView)).setVisibility(View.GONE);
         }
     }
 }

@@ -17,13 +17,13 @@ public class DatabaseTask {
         void onPostResult();
     }
 
-    private DatabaseTask() {
-            mDatabase = MetaDataDatabase.getDatabase(mContext);
+    private DatabaseTask(Context context) {
+            mDatabase = MetaDataDatabase.getDatabase(context);
     }
 
-    public static void init() {
+    public static void init(Context context) {
         if (mDatabase == null) {
-            new DatabaseTask();
+            new DatabaseTask(context);
         }
     }
 
