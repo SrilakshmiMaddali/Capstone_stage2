@@ -27,6 +27,9 @@ public interface MetaDataDao {
     @Update
     void updateMetaData (MetaDataEntity metaDataEntity);
 
+    @Query("UPDATE pass_data_table SET id= :metaDataId WHERE domain= :domainName")
+    void update(int metaDataId, String domainName);
+
     @Query("DELETE FROM pass_data_table WHERE id = :metaDataId")
     void deleteMetaData(int metaDataId);
 

@@ -133,6 +133,7 @@ public class MainActivity extends BaseActivity {
                 int current = 0;
                 for (MetaDataEntity data : mList) {
                     data.setPositionId(current);
+                    new DatabaseTask.UpdateByIdAndDomain(data.getDomain()).execute(current);
                     current++;
                 }
                 init();
@@ -214,7 +215,7 @@ public class MainActivity extends BaseActivity {
                         //Gets ID for look up in DB
                         MetaDataEntity temp = mList.get(position);
 
-                        bundle.putInt("position", position+1);
+                        bundle.putInt("position", position);
                         bundle.putString("hash_algorithm", hash_algorithm);
                         bundle.putInt("number_iterations", number_iterations);
                         bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
@@ -237,7 +238,7 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onPostResult() {}
                         });
-                        task2.execute(position+1);
+                        task2.execute(position);
 
 
                     }
@@ -349,9 +350,9 @@ public class MainActivity extends BaseActivity {
     }
 
     public void addSampleData() {
-        MetaDataEntity meta1 = new MetaDataEntity(1, 1, getString(R.string.sample_domain1), getString(R.string.sample_username1), 15, 1, 1, 1, 1, 1);
-        MetaDataEntity meta2 = new MetaDataEntity(2, 2, getString(R.string.sample_domain2), getString(R.string.sample_username2), 20, 1, 1, 1, 1, 1);
-        MetaDataEntity meta3 = new MetaDataEntity(3, 3, getString(R.string.sample_domain3), getString(R.string.sample_username3), 4, 1, 0, 0, 0, 1);
+        MetaDataEntity meta1 = new MetaDataEntity(0, 0, getString(R.string.sample_domain1), getString(R.string.sample_username1), 15, 1, 1, 1, 1, 1);
+        MetaDataEntity meta2 = new MetaDataEntity(1, 1, getString(R.string.sample_domain2), getString(R.string.sample_username2), 20, 1, 1, 1, 1, 1);
+        MetaDataEntity meta3 = new MetaDataEntity(2, 2, getString(R.string.sample_domain3), getString(R.string.sample_username3), 4, 1, 0, 0, 0, 1);
 
         DatabaseTask.InsertTask insert1 = new DatabaseTask.InsertTask();
         insert1.execute(meta1);
