@@ -47,13 +47,10 @@ public class PassWalletWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        Intent intent = new Intent(context, UpdateWidgetService.class);
+        Intent intent = new Intent(context,
+                FrequentWidgetUpdateService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
         context.startService(intent);
-        Intent intent2 = new Intent(context,
-                FrequentWidgetUpdateService.class);
-        intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-        context.startService(intent2);
     }
 
     @Override

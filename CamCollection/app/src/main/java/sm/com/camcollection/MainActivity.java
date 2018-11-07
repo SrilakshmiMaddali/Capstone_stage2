@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -82,7 +83,10 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MobileAds.initialize(this, "ca-app-pub-6595532125576760~1922912103");
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        AdView adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
         DatabaseTask.init(this);
 
         PrefManager prefManager = new PrefManager(this);
@@ -317,19 +321,6 @@ public class MainActivity extends BaseActivity {
 
         initialAlert.setVisibility(View.VISIBLE);
         hints(position);
-
-        /*Snackbar.make(findViewById(android.R.id.content), getString(R.string.domain) + " " + toDeleteMetaData.getDomain() + " " + getString(R.string.item_deleted), Snackbar.LENGTH_SHORT)
-                .setAction(getString(R.string.undo), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mDatabase.MetaDataDao().insert(toDeleteMetaDataFinal);
-                        mList.add(finalPosition, toDeleteMetaDataFinal);
-                        mAdapter.notifyItemInserted(finalPosition);
-                        mAdapter.notifyDataSetChanged();
-                        initialAlert.setVisibility(View.GONE);
-                        hints(1);
-                    }
-                }).show();*/
         mAdapter.notifyItemRemoved(position);
     }
 
@@ -442,14 +433,13 @@ public class MainActivity extends BaseActivity {
     private void loadAds() {
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        // TODO: Replace sample app ID with your AdMob app ID
-        //MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
         //Load the add
-        if (!remove_ads) {
+        // commenting as we need to display only test ads.
+        /*if (!remove_ads) {
             AdRequest adRequest = new AdRequest.Builder().build();
             ((AdView) findViewById(R.id.adView)).loadAd(adRequest);
         } else {
             ((AdView) findViewById(R.id.adView)).setVisibility(View.GONE);
-        }
+        }*/
     }
 }
