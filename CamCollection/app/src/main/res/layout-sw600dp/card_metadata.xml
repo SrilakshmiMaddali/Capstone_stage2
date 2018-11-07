@@ -35,7 +35,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/card_margin"
                 android:layout_marginStart="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginRight="@dimen/card_margin"
+                android:layout_marginLeft="10dp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -47,8 +49,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/card_margin"
-                        android:text="DOMAIN"
-                        android:textStyle="bold" />
+                        android:text="@string/domain_tv"
+                        android:textStyle="bold"
+                        android:layout_marginLeft="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/usernameTextView"
@@ -56,7 +59,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/domainTextView"
                         android:layout_marginStart="@dimen/card_margin"
-                        android:text="@string/username" />
+                        android:text="@string/username"
+                        android:layout_marginLeft="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/username"
@@ -66,7 +70,9 @@
                         android:layout_marginStart="5dp"
                         android:layout_toEndOf="@+id/usernameTextView"
                         android:text="@string/placeholder_no_data"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/usernameTextView" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -88,7 +94,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:layout_toEndOf="@+id/characterTextView"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/characterTextView" />
 
                     <TextView
                         android:id="@+id/lengthTextView"
@@ -104,7 +112,9 @@
                         android:layout_below="@+id/characterTextView"
                         android:layout_marginStart="5dp"
                         android:layout_toEndOf="@+id/lengthTextView"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/lengthTextView" />
 
                     <TextView
                         android:id="@+id/iterationTextView"
@@ -120,7 +130,9 @@
                         android:layout_below="@+id/lengthTextView"
                         android:layout_marginStart="5dp"
                         android:layout_toEndOf="@+id/iterationTextView"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/iterationTextView" />
 
                 </RelativeLayout>
             </LinearLayout>

@@ -99,7 +99,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="16dp"
             android:layout_toEndOf="@+id/textViewLengthHeading"
-            android:text="10"
+            android:text="@string/sample_num"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/textViewLengthHeading" />

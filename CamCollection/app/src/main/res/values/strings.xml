@@ -129,6 +129,8 @@
     <string name="github_1"><a href="https://github.com/SrilakshmiMaddali/Capstone_stage1">Github-url-Capstone-Stage-1</a></string>
     <string name="github_2"><a href="https://github.com/SrilakshmiMaddali/Capstone_stage2">Github-url-Capstone-Stage-2</a></string>
     <string name="about">About</string>
+    <string name="domain_tv">DOMAIN</string>
+    <string name="sample_num">10</string>
 
     <string name="visibilitybtn_desc">Password visibility button</string>
     <string name="copybtn_desc">Password copy button</string>

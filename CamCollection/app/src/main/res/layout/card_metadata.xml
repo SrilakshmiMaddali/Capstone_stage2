@@ -50,7 +50,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/card_margin"
-                        android:text="DOMAIN"
+                        android:text="@string/domain_tv"
                         android:textStyle="bold"
                         android:layout_marginLeft="@dimen/card_margin" />
 
