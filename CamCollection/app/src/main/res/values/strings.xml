@@ -129,4 +129,13 @@
     <string name="github_1"><a href="https://github.com/SrilakshmiMaddali/Capstone_stage1">Github-url-Capstone-Stage-1</a></string>
     <string name="github_2"><a href="https://github.com/SrilakshmiMaddali/Capstone_stage2">Github-url-Capstone-Stage-2</a></string>
     <string name="about">About</string>
+
+    <string name="visibilitybtn_desc">Password visibility button</string>
+    <string name="copybtn_desc">Password copy button</string>
+    <string name="addcategory_desc">Tap to add new category of password</string>
+    <string name="add_new_password_item">Tap to add new category of password</string>
+    <string name="right_desc">Right arrow</string>
+    <string name="passwordCard_desc">Password card image</string>
+    <string name="versioninfo_desc">Version info image button</string>
+    <string name="card_view_password_item">Card description of password item</string>
 </resources>

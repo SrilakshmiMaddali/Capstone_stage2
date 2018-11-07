@@ -143,6 +143,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/ic_menu_info"
+                android:contentDescription="@string/versioninfo_desc"
                 android:layout_alignParentRight="true" />
 
         </RelativeLayout>

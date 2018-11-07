@@ -17,7 +17,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/plus"
-        app:layout_behavior="sm.com.camcollection.util.ScrollAwareFABBehavior" />
+        app:layout_behavior="sm.com.camcollection.util.ScrollAwareFABBehavior"
+        android:contentDescription="@string/add_new_password_item"/>
 
     <LinearLayout
         android:id="@+id/insert_alert"
@@ -29,7 +30,8 @@
         android:paddingEnd="70sp"
         android:visibility="gone"
         app:layout_anchor="@id/add_fab"
-        app:layout_anchorGravity="bottom|left">
+        app:layout_anchorGravity="bottom|left"
+        android:paddingRight="70sp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,7 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_keyboard_arrow_right_black_24sp"
-            android:tint="@color/colorSecondaryDark" />
+            android:tint="@color/colorSecondaryDark"
+            android:contentDescription="@string/right_desc" />
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -127,7 +127,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_menu_info" />
+            android:background="@drawable/ic_menu_info"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/versioninfo_desc"/>
 
     </RelativeLayout>
 
