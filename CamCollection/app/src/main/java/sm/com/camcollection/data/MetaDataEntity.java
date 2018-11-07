@@ -41,6 +41,9 @@ public class MetaDataEntity implements Parcelable{
     @ColumnInfo(name = "pwVersion")
     private int pwVersion;
 
+    @ColumnInfo(name = "frequency")
+    private int frequency;
+
     public MetaDataEntity(@NonNull int id, int positionId, String domain, String userName, int length, int hasNumber, int hasSymbols, int hasLettersUp, int hasLetterLow, int pwVersion) {
         this.id = id;
         this.positionId = positionId;
@@ -52,6 +55,7 @@ public class MetaDataEntity implements Parcelable{
         this.hasLettersUp = hasLettersUp;
         this.hasLetterLow = hasLetterLow;
         this.pwVersion = pwVersion;
+        this.frequency = 0;
     }
 
     public MetaDataEntity(Parcel in) {
@@ -65,6 +69,7 @@ public class MetaDataEntity implements Parcelable{
         this.hasLettersUp = in.readInt();
         this.hasLetterLow = in.readInt();
         this.pwVersion = in.readInt();
+        this.frequency = in.readInt();
     }
 
     @Override
@@ -84,6 +89,7 @@ public class MetaDataEntity implements Parcelable{
         dest.writeInt(hasLettersUp);
         dest.writeInt(hasLetterLow);
         dest.writeInt(pwVersion);
+        dest.writeInt(frequency);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -175,5 +181,13 @@ public class MetaDataEntity implements Parcelable{
 
     public void setPwVersion(int pwVersion) {
         this.pwVersion = pwVersion;
+    }
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
     }
 }

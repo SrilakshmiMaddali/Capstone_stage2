@@ -188,6 +188,8 @@ public class MainActivity extends BaseActivity {
                             public void onPostResult(MetaDataEntity entity) {
                                 bundle.putParcelable("entity", entity);
                                 if (entity != null) {
+                                    int frq = entity.getFrequency();
+                                    new DatabaseTask.UpdateByFrequencyAndDomain(entity.getDomain()).execute(frq+1);
                                     FragmentManager fragmentManager = getSupportFragmentManager();
                                     GeneratePasswordDialog generatePasswordDialog = new GeneratePasswordDialog();
                                     generatePasswordDialog.setArguments(bundle);
@@ -356,15 +358,15 @@ public class MainActivity extends BaseActivity {
 
         DatabaseTask.InsertTask insert1 = new DatabaseTask.InsertTask();
         insert1.execute(meta1);
-       // mList.add(0, meta1);
+        mList.add(0, meta1);
 
         DatabaseTask.InsertTask insert2 = new DatabaseTask.InsertTask();
         insert2.execute(meta2);
-      //  mList.add(1, meta2);
+        mList.add(1, meta2);
 
         DatabaseTask.InsertTask insert3 = new DatabaseTask.InsertTask();
         insert3.execute(meta3);
-      //  mList.add(2, meta3);
+        mList.add(2, meta3);
     }
 
     public void hints(int position) {

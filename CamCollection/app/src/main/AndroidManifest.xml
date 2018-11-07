@@ -36,6 +36,16 @@
                 android:value="sm.com.camcollection.MainActivity" />
         </activity>
 
+        <activity
+            android:name="sm.com.camcollection.AboutActivity"
+            android:label="@string/about"
+            android:parentActivityName="sm.com.camcollection.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="sm.com.camcollection.MainActivity" />
+        </activity>
+
         <receiver android:name=".PassWalletWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -46,6 +56,7 @@
                 android:resource="@xml/pass_wallet_info" />
         </receiver>
         <service android:name=".UpdateWidgetService" />
+        <service android:name="sm.com.camcollection.FrequentWidgetUpdateService" />
     </application>
 
 </manifest>

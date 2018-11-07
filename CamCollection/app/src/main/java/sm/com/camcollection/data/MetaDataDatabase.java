@@ -14,10 +14,11 @@ public abstract class MetaDataDatabase extends RoomDatabase {
 
     private static volatile MetaDataDatabase INSTANCE;
 
-    static final Migration MIGRATION_1_2 = new Migration(2, 3) {
+    static final Migration MIGRATION_1_2 = new Migration(1,2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             // Since we didn't alter the table, there's nothing else to do here.
+            //database.execSQL("DROP TABLE IF EXISTS pass_data_table");
         }
     };
 
@@ -28,6 +29,7 @@ public abstract class MetaDataDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             MetaDataDatabase.class, "pass_data_database")
                             .addMigrations(MIGRATION_1_2)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

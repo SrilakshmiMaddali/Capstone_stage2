@@ -156,6 +156,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 startActivity(intent);
                 break;
             case R.id.nav_about:
+                intent = new Intent(this, AboutActivity.class);
+                createBackStack(intent);
                 break;
             case R.id.nav_settings:
                 intent = new Intent(this, SettingsActivity.class);

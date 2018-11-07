@@ -126,5 +126,7 @@
     <string name="default_iterations" translatable="false">2000</string>
 
     <string name="google_app_id">1:983990540864:android:ca25693db0a957b1</string>
-
+    <string name="github_1"><a href="https://github.com/SrilakshmiMaddali/Capstone_stage1">Github-url-Capstone-Stage-1</a></string>
+    <string name="github_2"><a href="https://github.com/SrilakshmiMaddali/Capstone_stage2">Github-url-Capstone-Stage-2</a></string>
+    <string name="about">About</string>
 </resources>

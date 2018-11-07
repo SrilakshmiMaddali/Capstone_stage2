@@ -88,6 +88,18 @@ public class DatabaseTask {
         }
     }
 
+    public static class UpdateByFrequencyAndDomain extends AsyncTask<Integer, Object, Object> {
+        String domainName;
+
+        public UpdateByFrequencyAndDomain(String domain) {
+            domainName = domain;
+        }
+        @Override
+        protected Object doInBackground(Integer... integers) {
+            updateByFrequencyAndDomain(domainName, integers[0].intValue());
+            return null;
+        }
+    }
     public static  class updateMetaDataTask extends AsyncTask<MetaDataEntity, Object, Object> {
         @Override
         protected Object doInBackground(MetaDataEntity... metaDataEntities) {
@@ -159,6 +171,12 @@ public class DatabaseTask {
     private static void updateById(int id, String domain) {
         if (mDatabase != null) {
             mDatabase.MetaDataDao().update(id, domain);
+        }
+    }
+
+    private static void updateByFrequencyAndDomain(String domain, int frq) {
+        if (mDatabase != null) {
+            mDatabase.MetaDataDao().update(domain, frq);
         }
     }
 

@@ -30,6 +30,9 @@ public interface MetaDataDao {
     @Query("UPDATE pass_data_table SET id= :metaDataId WHERE domain= :domainName")
     void update(int metaDataId, String domainName);
 
+    @Query("UPDATE pass_data_table SET frequency= :frq WHERE domain= :domainName")
+    void update(String domainName, int frq);
+
     @Query("DELETE FROM pass_data_table WHERE id = :metaDataId")
     void deleteMetaData(int metaDataId);
 
