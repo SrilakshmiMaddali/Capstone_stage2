@@ -22,14 +22,21 @@ public abstract class MetaDataDatabase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_2_3 = new Migration(2,3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            // Since we didn't alter the table, there's nothing else to do here.
+            //database.execSQL("DROP TABLE IF EXISTS pass_data_table");
+        }
+    };
+
     public static MetaDataDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (MetaDataDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            MetaDataDatabase.class, "pass_data_database")
-                            .addMigrations(MIGRATION_1_2)
-                            .fallbackToDestructiveMigration()
+                            MetaDataDatabase.class, "pass_data_database_1")
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                             .build();
                 }
             }

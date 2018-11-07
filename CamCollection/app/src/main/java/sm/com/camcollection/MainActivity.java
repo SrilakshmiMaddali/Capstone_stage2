@@ -130,16 +130,15 @@ public class MainActivity extends BaseActivity {
                 if (mList != null) {
                     hints(mList.size());
                 }
-                mAdapter = new ListViewDataAdapter(mList);
-                mRecyclerView.setAdapter(mAdapter);
-                loadPreferences();
-
                 int current = 0;
                 for (MetaDataEntity data : mList) {
                     data.setPositionId(current);
                     new DatabaseTask.UpdateByIdAndDomain(data.getDomain()).execute(current);
                     current++;
                 }
+                mAdapter = new ListViewDataAdapter(mList);
+                mRecyclerView.setAdapter(mAdapter);
+                loadPreferences();
                 init();
             }
 
@@ -266,25 +265,9 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
                                 for (final int position : reverseSortedPositions) {
-                                    //deleteItem(position);
-                                    DatabaseTask.deleteByIdTask task = new DatabaseTask.deleteByIdTask(new DatabaseTask.Callback() {
-                                        @Override
-                                        public void onPostResult(List<MetaDataEntity> entities) {
-
-                                        }
-
-                                        @Override
-                                        public void onPostResult(MetaDataEntity entity) {
-
-                                        }
-
-                                        @Override
-                                        public void onPostResult() {
-                                            mAdapter.removeItem(position);
-                                            mHandler.sendEmptyMessage(REFRESH);
-                                        }
-                                    });
-                                    task.execute(position);
+                                    new DatabaseTask.deleteByMetaDataTask().execute(mAdapter.getItem(position));
+                                    mAdapter.removeItem(position);
+                                    mHandler.sendEmptyMessage(REFRESH);
                                 }
                             }
                         });
@@ -343,21 +326,21 @@ public class MainActivity extends BaseActivity {
     }
 
     public void addSampleData() {
-        MetaDataEntity meta1 = new MetaDataEntity(0, 0, getString(R.string.sample_domain1), getString(R.string.sample_username1), 15, 1, 1, 1, 1, 1);
-        MetaDataEntity meta2 = new MetaDataEntity(1, 1, getString(R.string.sample_domain2), getString(R.string.sample_username2), 20, 1, 1, 1, 1, 1);
-        MetaDataEntity meta3 = new MetaDataEntity(2, 2, getString(R.string.sample_domain3), getString(R.string.sample_username3), 4, 1, 0, 0, 0, 1);
+        MetaDataEntity meta1 = new MetaDataEntity(1, 1, getString(R.string.sample_domain1), getString(R.string.sample_username1), 15, 1, 1, 1, 1, 1);
+        MetaDataEntity meta2 = new MetaDataEntity(2, 2, getString(R.string.sample_domain2), getString(R.string.sample_username2), 20, 1, 1, 1, 1, 1);
+        MetaDataEntity meta3 = new MetaDataEntity(3, 3, getString(R.string.sample_domain3), getString(R.string.sample_username3), 4, 1, 0, 0, 0, 1);
 
         DatabaseTask.InsertTask insert1 = new DatabaseTask.InsertTask();
         insert1.execute(meta1);
-        mList.add(0, meta1);
+        //mList.add(0, meta1);
 
         DatabaseTask.InsertTask insert2 = new DatabaseTask.InsertTask();
         insert2.execute(meta2);
-        mList.add(1, meta2);
+        //mList.add(1, meta2);
 
         DatabaseTask.InsertTask insert3 = new DatabaseTask.InsertTask();
         insert3.execute(meta3);
-        mList.add(2, meta3);
+        //mList.add(2, meta3);
     }
 
     public void hints(int position) {

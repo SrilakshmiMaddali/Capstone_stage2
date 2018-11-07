@@ -15,25 +15,25 @@ public interface MetaDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MetaDataEntity data);
 
-    @Query("DELETE FROM pass_data_table")
+    @Query("DELETE FROM pass_data_table_1")
     void deleteAll();
 
-    @Query("SELECT * FROM pass_data_table")
+    @Query("SELECT * FROM pass_data_table_1")
     List<MetaDataEntity> getAll();
 
-    @Query("SELECT * FROM pass_data_table WHERE id = :metaDataId")
+    @Query("SELECT * FROM pass_data_table_1 WHERE id = :metaDataId")
     MetaDataEntity getMetaDatabyId(int metaDataId);
 
     @Update
     void updateMetaData (MetaDataEntity metaDataEntity);
 
-    @Query("UPDATE pass_data_table SET id= :metaDataId WHERE domain= :domainName")
+    @Query("UPDATE pass_data_table_1 SET id= :metaDataId WHERE domain= :domainName")
     void update(int metaDataId, String domainName);
 
-    @Query("UPDATE pass_data_table SET frequency= :frq WHERE domain= :domainName")
+    @Query("UPDATE pass_data_table_1 SET frequency= :frq WHERE domain= :domainName")
     void update(String domainName, int frq);
 
-    @Query("DELETE FROM pass_data_table WHERE id = :metaDataId")
+    @Query("DELETE FROM pass_data_table_1 WHERE id = :metaDataId")
     void deleteMetaData(int metaDataId);
 
     @Delete

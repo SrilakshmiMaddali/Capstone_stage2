@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-@Entity(tableName = "pass_data_table")
+@Entity(tableName = "pass_data_table_1")
 public class MetaDataEntity implements Parcelable{
 
     @PrimaryKey(autoGenerate = true)

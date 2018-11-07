@@ -60,5 +60,4 @@ public class PrefManager {
     public boolean isFirstTimeGen() {
         return pref.getBoolean(IS_FIRST_TIME_GEN, true);
     }
-
 }
