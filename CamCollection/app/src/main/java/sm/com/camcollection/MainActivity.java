@@ -1,14 +1,26 @@
 package sm.com.camcollection;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.db.SupportSQLiteDatabase;
+import android.arch.persistence.room.RoomDatabase;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,12 +41,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sm.com.camcollection.adapter.ListViewDataAdapter;
 import sm.com.camcollection.data.DatabaseTask;
+import sm.com.camcollection.data.MetaDataDao;
 import sm.com.camcollection.data.MetaDataDatabase;
 import sm.com.camcollection.data.MetaDataEntity;
+import sm.com.camcollection.data.MetaDataViewModel;
 import sm.com.camcollection.dialogs.AddMetaDataDialog;
 import sm.com.camcollection.dialogs.GeneratePasswordDialog;
 import sm.com.camcollection.dialogs.UpdateMetadataDialog;
@@ -42,24 +57,30 @@ import sm.com.camcollection.util.PrefManager;
 import sm.com.camcollection.util.RecyclerItemClickListener;
 import sm.com.camcollection.util.SwipeableRecyclerViewTouchListener;
 
-public class MainActivity extends BaseActivity {
+import static sm.com.camcollection.data.MetaDataDatabase.INSTANCE;
+
+public class MainActivity extends BaseActivity implements DialogListener {
 
     private ListViewDataAdapter mAdapter;
     private List<MetaDataEntity> mList;
     private RecyclerView mRecyclerView;
-
+    MetaDataTaskReceiver mMetaDataTaskReceiver;
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     private boolean clipboard_enabled;
+    private Parcelable mLayoutManagerState;
     private boolean remove_ads;
     private boolean bindToDevice_enabled;
     private String hash_algorithm;
     private int number_iterations;
     private final static int INIT = 0;
     private final static int REFRESH = 1;
+    public final static String MAX_POSITION_ID = "max_id";
 
     private static final String APP_TAG = "PASSWALLET";
     // remote config keys
     private static final String COPY_TO_CLIPBOARD = "copy_to_clipboard";
+    private static final String BUNDLE_RECYCLER_LAYOUT = "bundle_recycler_layout";
+    private static final String RECYCLER_POSITION = "recycler_position";
     private static final String NUMBEROF_HASH_ITERATIONS = "number_of_hash_iterations";
     private static final String REMOVE_ADS = "remove_ads";
 
@@ -87,7 +108,10 @@ public class MainActivity extends BaseActivity {
         AdView adView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
-        DatabaseTask.init(this);
+        mMetaDataTaskReceiver = new MetaDataTaskReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMetaDataTaskReceiver, new IntentFilter(DELETE_ALL_TASK_ACTION));
+        mMetaDataViewModel = ViewModelProviders.of(this).get(MetaDataViewModel.class);
+
 
         PrefManager prefManager = new PrefManager(this);
 
@@ -110,36 +134,49 @@ public class MainActivity extends BaseActivity {
         mFirebaseRemoteConfig.setConfigSettings(configSettings);
         // [END enable_dev_mode]
 
-
-        boolean isFirstTime = prefManager.isFirstTimeLaunch();
-        if (isFirstTime) {
-           // recycerList = new ArrayList<>(4);
-            addSampleData();
-            prefManager.setFirstTimeLaunch(false);
-        }
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        refreshFromDatabase();
+        mAdapter = new ListViewDataAdapter(mList);
+        mRecyclerView.setAdapter(mAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mMetaDataViewModel.getAllRecords().observe(this, new Observer<List<MetaDataEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<MetaDataEntity> entities) {
+                mAdapter.setMetaDataList(entities);
+                mAdapter.notifyDataSetChanged();
+                loadPreferences();
+            }
+        });
+        init();
     }
 
-    private void refreshFromDatabase() {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mLayoutManagerState);
+        outState.putInt(RECYCLER_POSITION, mRecyclerView.getChildAdapterPosition(mRecyclerView.getFocusedChild()));
+    }
+
+    private void refreshFromDatabase(final Bundle savedInstanceState) {
+
         DatabaseTask.GetAllTask getAllTask = new DatabaseTask.GetAllTask(new DatabaseTask.Callback() {
             @Override
             public void onPostResult(List<MetaDataEntity> entities) {
-                mList = entities;
-                initialAlert = (LinearLayout) findViewById(R.id.insert_alert);
-                if (mList != null) {
-                    hints(mList.size());
-                }
-                int current = 0;
-                for (MetaDataEntity data : mList) {
-                    data.setPositionId(current);
-                    new DatabaseTask.UpdateByIdAndDomain(data.getDomain()).execute(current);
-                    current++;
-                }
-                mAdapter = new ListViewDataAdapter(mList);
-                mRecyclerView.setAdapter(mAdapter);
-                loadPreferences();
-                init();
+                    mList = entities;
+                    initialAlert = (LinearLayout) findViewById(R.id.insert_alert);
+                    if (mList != null) {
+                        hints(mList.size());
+                    }
+                    int current = 0;
+                    for (MetaDataEntity data : mList) {
+                        data.setPositionId(current);
+                        mMetaDataViewModel.UpdateByIdAndDomain(data.getDomain(), current);
+                        current++;
+                    }
+                    mAdapter = new ListViewDataAdapter(mList);
+                    mRecyclerView.setAdapter(mAdapter);
+                    loadPreferences();
+                    init();
             }
 
             @Override
@@ -158,8 +195,7 @@ public class MainActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getBaseContext(), mRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
 
@@ -173,43 +209,23 @@ public class MainActivity extends BaseActivity {
                             return;
                         }
 
-                        bundle.putInt("position", temp.getId());
+                        bundle.putInt("position", temp.getPositionId());
                         bundle.putString("hash_algorithm", hash_algorithm);
                         bundle.putBoolean("clipboard_enabled", clipboard_enabled);
                         bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
                         bundle.putInt("number_iterations", number_iterations);
+                        bundle.putParcelable("entity",temp);
 
 
-
-                        DatabaseTask.GetMetaDataById task = new DatabaseTask.GetMetaDataById(new DatabaseTask.Callback() {
-                            @Override
-                            public void onPostResult(List<MetaDataEntity> entities) {
-
-                            }
-
-                            @Override
-                            public void onPostResult(MetaDataEntity entity) {
-                                bundle.putParcelable("entity", entity);
-                                if (entity != null) {
-                                    int frq = entity.getFrequency();
-                                    new DatabaseTask.UpdateByFrequencyAndDomain(entity.getDomain()).execute(frq+1);
-                                    FragmentManager fragmentManager = getSupportFragmentManager();
-                                    GeneratePasswordDialog generatePasswordDialog = new GeneratePasswordDialog();
-                                    generatePasswordDialog.setArguments(bundle);
-                                    generatePasswordDialog.show(fragmentManager, "GeneratePasswordDialog");
-                                }
-                            }
-                            @Override
-                            public void onPostResult() {}
-                        });
-                        task.execute(temp.getId());
-
-                        /*PrefManager prefManager = new PrefManager(getBaseContext());
-                        if (prefManager.isFirstTimeGen()) {
-                            prefManager.setFirstTimeGen(false);
-                            Intent intent = new Intent(MainActivity.this, MasterPWTutorialActivity.class);
-                            startActivity(intent);
-                        }*/
+                        MetaDataEntity entity = mMetaDataViewModel.getMetaDataById(temp.getPositionId());
+                        if (entity != null) {
+                            int frq = entity.getFrequency();
+                            mMetaDataViewModel.UpdateByFrequencyAndDomain(frq+1, entity.getDomain());
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            GeneratePasswordDialog generatePasswordDialog = new GeneratePasswordDialog();
+                            generatePasswordDialog.setArguments(bundle);
+                            generatePasswordDialog.show(fragmentManager, "GeneratePasswordDialog");
+                        }
                     }
 
                     @Override
@@ -218,34 +234,19 @@ public class MainActivity extends BaseActivity {
                         final Bundle bundle = new Bundle();
 
                         //Gets ID for look up in DB
-                        MetaDataEntity temp = mList.get(position);
+                        MetaDataEntity temp = mAdapter.getItem(position);
 
                         bundle.putInt("position", position);
+                        bundle.putInt("id", temp.getId());
                         bundle.putString("hash_algorithm", hash_algorithm);
                         bundle.putInt("number_iterations", number_iterations);
                         bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
-
-                        DatabaseTask.GetMetaDataById task2 = new DatabaseTask.GetMetaDataById(new DatabaseTask.Callback() {
-                            @Override
-                            public void onPostResult(List<MetaDataEntity> entities) {
-
-                            }
-
-                            @Override
-                            public void onPostResult(MetaDataEntity entity) {
-                                bundle.putParcelable("entity", entity);
-                                FragmentManager fragmentManager = getSupportFragmentManager();
-                                UpdateMetadataDialog updateMetadataDialog = new UpdateMetadataDialog();
-                                updateMetadataDialog.setArguments(bundle);
-                                updateMetadataDialog.show(fragmentManager, "UpdateMetadataDialog");
-                            }
-
-                            @Override
-                            public void onPostResult() {}
-                        });
-                        task2.execute(position);
-
-
+                        MetaDataEntity entity = mMetaDataViewModel.getMetaDataById(position);
+                        bundle.putParcelable("entity", entity);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        UpdateMetadataDialog updateMetadataDialog = new UpdateMetadataDialog();
+                        updateMetadataDialog.setArguments(bundle);
+                        updateMetadataDialog.show(fragmentManager, "UpdateMetadataDialog");
                     }
                 })
         );
@@ -265,7 +266,7 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
                                 for (final int position : reverseSortedPositions) {
-                                    new DatabaseTask.deleteByMetaDataTask().execute(mAdapter.getItem(position));
+                                    mMetaDataViewModel.deleteById(position);
                                     mAdapter.removeItem(position);
                                     mHandler.sendEmptyMessage(REFRESH);
                                 }
@@ -279,8 +280,12 @@ public class MainActivity extends BaseActivity {
             addFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    int itemCount = mAdapter.getItemCount();
+                    bundle.putInt(MAX_POSITION_ID, itemCount);
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     AddMetaDataDialog addMetaDataDialog = new AddMetaDataDialog();
+                    addMetaDataDialog.setArguments(bundle);
                     addMetaDataDialog.show(fragmentManager, "AddMetaDataDialog");
                 }
             });
@@ -294,8 +299,7 @@ public class MainActivity extends BaseActivity {
         final MetaDataEntity toDeleteMetaDataFinal = toDeleteMetaData;
 
         //Removes MetaData from DB
-        DatabaseTask.deleteByMetaDataTask task = new DatabaseTask.deleteByMetaDataTask();
-        task.execute(toDeleteMetaData);
+        mMetaDataViewModel.deleteByMetaData(toDeleteMetaData);
 
         //Removes MetaData from List in View
         mList.remove(position);
@@ -316,6 +320,11 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return false;
     }
@@ -323,24 +332,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected int getNavigationDrawerID() {
         return 0;
-    }
-
-    public void addSampleData() {
-        MetaDataEntity meta1 = new MetaDataEntity(1, 1, getString(R.string.sample_domain1), getString(R.string.sample_username1), 15, 1, 1, 1, 1, 1);
-        MetaDataEntity meta2 = new MetaDataEntity(2, 2, getString(R.string.sample_domain2), getString(R.string.sample_username2), 20, 1, 1, 1, 1, 1);
-        MetaDataEntity meta3 = new MetaDataEntity(3, 3, getString(R.string.sample_domain3), getString(R.string.sample_username3), 4, 1, 0, 0, 0, 1);
-
-        DatabaseTask.InsertTask insert1 = new DatabaseTask.InsertTask();
-        insert1.execute(meta1);
-        //mList.add(0, meta1);
-
-        DatabaseTask.InsertTask insert2 = new DatabaseTask.InsertTask();
-        insert2.execute(meta2);
-        //mList.add(1, meta2);
-
-        DatabaseTask.InsertTask insert3 = new DatabaseTask.InsertTask();
-        insert3.execute(meta3);
-        //mList.add(2, meta3);
     }
 
     public void hints(int position) {
@@ -425,4 +416,52 @@ public class MainActivity extends BaseActivity {
             ((AdView) findViewById(R.id.adView)).setVisibility(View.GONE);
         }*/
     }
-}
+
+    public static RoomDatabase.Callback sRoomDatabaseCallback =
+            new RoomDatabase.Callback(){
+
+                @Override
+                public void onOpen (@NonNull SupportSQLiteDatabase db){
+                    super.onOpen(db);
+                    new PopulateDbAsync(INSTANCE).execute();
+                }
+    };
+
+    @Override
+    public void onDialogResponse(int resultCode, Bundle data) {
+        MetaDataEntity entity;
+        switch (resultCode) {
+            case ADD_RECORD_SUCCESS:
+                entity = (MetaDataEntity) data.getParcelable(ENTITY_KEY);
+                mMetaDataViewModel.insert(entity);
+                break;
+            case UPDATE_METADATA:
+                entity = (MetaDataEntity) data.getParcelable(ENTITY_KEY);
+                mMetaDataViewModel.updateMetaData(entity);
+                break;
+        }
+    }
+
+    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
+        private final MetaDataDao dao;
+        PopulateDbAsync(MetaDataDatabase db) {
+            dao = db.MetaDataDao();
+        }
+        @Override
+        protected Void doInBackground(final Void... params) {
+            dao.deleteAll();
+            MetaDataEntity meta1 = new MetaDataEntity(1, 0, "example.email.com", "example.name@email.com", 15, 1, 1, 1, 1, 1);
+            dao.insert(meta1);
+            return null;
+        }
+    }
+
+    public class  MetaDataTaskReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction() == DELETE_ALL_TASK_ACTION) {
+                mMetaDataViewModel.deleteAll();
+            }
+        }
+    }
+ }

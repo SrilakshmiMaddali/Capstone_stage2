@@ -1,5 +1,6 @@
 package sm.com.camcollection.data;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -19,9 +20,9 @@ public interface MetaDataDao {
     void deleteAll();
 
     @Query("SELECT * FROM pass_data_table_1")
-    List<MetaDataEntity> getAll();
+    LiveData<List<MetaDataEntity>>  getAll();
 
-    @Query("SELECT * FROM pass_data_table_1 WHERE id = :metaDataId")
+    @Query("SELECT * FROM pass_data_table_1 WHERE positionId = :metaDataId")
     MetaDataEntity getMetaDatabyId(int metaDataId);
 
     @Update
@@ -33,7 +34,7 @@ public interface MetaDataDao {
     @Query("UPDATE pass_data_table_1 SET frequency= :frq WHERE domain= :domainName")
     void update(String domainName, int frq);
 
-    @Query("DELETE FROM pass_data_table_1 WHERE id = :metaDataId")
+    @Query("DELETE FROM pass_data_table_1 WHERE positionId = :metaDataId")
     void deleteMetaData(int metaDataId);
 
     @Delete

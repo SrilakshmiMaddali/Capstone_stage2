@@ -18,6 +18,7 @@
 package sm.com.camcollection.dialogs;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -35,12 +36,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
+import sm.com.camcollection.DialogListener;
 import sm.com.camcollection.R;
-import sm.com.camcollection.data.DatabaseTask;
 import sm.com.camcollection.data.MetaDataDatabase;
 import sm.com.camcollection.data.MetaDataEntity;
+
+import static sm.com.camcollection.DialogListener.ENTITY_KEY;
 
 public class UpdateMetadataDialog extends DialogFragment {
 
@@ -49,6 +50,7 @@ public class UpdateMetadataDialog extends DialogFragment {
     private MetaDataDatabase mDatabase;
 
     private int mPosition;
+    private int mId;
 
     private MetaDataEntity mMetaDataEntity;
     private MetaDataEntity mOldMetaDataEntity;
@@ -59,6 +61,7 @@ public class UpdateMetadataDialog extends DialogFragment {
 
     private boolean closeDialog;
     private boolean versionVisible;
+    private DialogListener mListener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class UpdateMetadataDialog extends DialogFragment {
         Bundle bundle = getArguments();
 
         mPosition = bundle.getInt("position");
+        mId = bundle.getInt("id");
         hash_algorithm = bundle.getString("hash_algorithm");
         bindToDevice_enabled = bundle.getBoolean("bindToDevice_enabled");
         mMetaDataEntity = bundle.getParcelable("entity");
@@ -144,6 +148,20 @@ public class UpdateMetadataDialog extends DialogFragment {
         });
 
         return builder.create();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // Verify that the host activity implements the callback interface
+        try {
+            // Instantiate the EditNameDialogListener so we can send events to the host
+            mListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(context.toString()
+                    + " must implement EditNameDialogListener");
+        }
     }
 
     public void setCheckBox(CheckBox checkbox, int value) {
@@ -226,8 +244,11 @@ public class UpdateMetadataDialog extends DialogFragment {
             } else {
                 tempIteration = Integer.parseInt(iteration.getText().toString());
             }
-            DatabaseTask.updateMetaDataTask task = new DatabaseTask.updateMetaDataTask();
-            task.execute(new MetaDataEntity(mPosition, mPosition,
+            /*DatabaseTask.updateMetaDataTask task = new DatabaseTask.updateMetaDataTask();
+
+            task.execute();*/
+            Bundle updateBundle = new Bundle();
+            updateBundle.putParcelable(ENTITY_KEY, new MetaDataEntity(mId, mPosition,
                     domain.getText().toString(),
                     username.getText().toString(),
                     seekBarLength.getProgress() + 4,
@@ -236,6 +257,7 @@ public class UpdateMetadataDialog extends DialogFragment {
                     boolToInt(checkBoxLettersUpUpdate.isChecked()),
                     boolToInt(checkBoxLettersLowUpdate.isChecked()),
                     tempIteration));
+            mListener.onDialogResponse(DialogListener.UPDATE_METADATA, updateBundle);
 
             Toast.makeText(getActivity(), getString(R.string.added_message), Toast.LENGTH_SHORT).show();
 

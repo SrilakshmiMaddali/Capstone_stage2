@@ -1,6 +1,7 @@
 package sm.com.camcollection.data;
 
 import android.app.ProgressDialog;
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -28,17 +29,26 @@ public class DatabaseTask {
     }
 
     public static  class DeleteAllTask extends AsyncTask<Object, Object, Object> {
+        MetaDataDao mDao;
+        public DeleteAllTask(MetaDataDao dao) {
+            mDao = dao;
+        }
         @Override
         protected Object doInBackground(Object... objects) {
-            deleteAll();
+            mDao.deleteAll();
             return null;
         }
     }
 
     public static  class InsertTask extends AsyncTask<MetaDataEntity, Object, Object> {
+        MetaDataDao mDao;
+        public InsertTask( MetaDataDao dao) {
+            mDao = dao;
+        }
+
         @Override
         protected Object doInBackground(MetaDataEntity... metaDataEntities) {
-            insert(metaDataEntities[0]);
+            mDao.insert(metaDataEntities[0]);
             return null;
         }
     }
@@ -50,7 +60,7 @@ public class DatabaseTask {
         }
         @Override
         protected List<MetaDataEntity> doInBackground(Object... objects) {
-            return getAll();
+            return null;
         }
 
         @Override
@@ -60,10 +70,6 @@ public class DatabaseTask {
     }
 
     public static class GetMetaDataById extends AsyncTask<Integer, Object, MetaDataEntity> {
-        Callback mCallback;
-        public GetMetaDataById(@NonNull Callback callback) {
-            mCallback = callback;
-        }
         @Override
         protected MetaDataEntity doInBackground(Integer... integers) {
             return getMetaDataEntity(integers[0].intValue());
@@ -71,65 +77,75 @@ public class DatabaseTask {
 
         @Override
         protected void onPostExecute(MetaDataEntity result) {
-            mCallback.onPostResult(result);
+            return;
         }
     }
 
     public static class UpdateByIdAndDomain extends AsyncTask<Integer, Object, Object> {
         String domainName;
-
-        public UpdateByIdAndDomain(String domain) {
+        MetaDataDao mDao;
+        public UpdateByIdAndDomain(MetaDataDao dao, String domain) {
+            mDao = dao;
             domainName = domain;
         }
         @Override
         protected Object doInBackground(Integer... integers) {
-            updateById(integers[0].intValue(), domainName);
+            mDao.update(integers[0].intValue(), domainName);
             return null;
         }
     }
 
     public static class UpdateByFrequencyAndDomain extends AsyncTask<Integer, Object, Object> {
         String domainName;
-
-        public UpdateByFrequencyAndDomain(String domain) {
+        MetaDataDao mDao;
+        public UpdateByFrequencyAndDomain(MetaDataDao dao, String domain) {
+            mDao = dao;
             domainName = domain;
         }
         @Override
         protected Object doInBackground(Integer... integers) {
-            updateByFrequencyAndDomain(domainName, integers[0].intValue());
+            mDao.update(domainName, integers[0].intValue());
             return null;
         }
     }
     public static  class updateMetaDataTask extends AsyncTask<MetaDataEntity, Object, Object> {
+        MetaDataDao mDao;
+
+        public updateMetaDataTask(MetaDataDao dao) {
+            mDao = dao;
+        }
         @Override
         protected Object doInBackground(MetaDataEntity... metaDataEntities) {
-            updateMetadata(metaDataEntities[0]);
+            mDao.updateMetaData(metaDataEntities[0]);
             return null;
         }
     }
 
     public static  class deleteByIdTask extends AsyncTask<Integer, Object, Object> {
-        Callback mCallback;
-        public deleteByIdTask(Callback callback) {
-            mCallback = callback;
+        MetaDataDao mDao;
+        public deleteByIdTask(MetaDataDao dao) {
+            mDao = dao;
         }
 
         @Override
         protected Object doInBackground(Integer... integers) {
-            deletebyId(integers[0].intValue());
+            mDao.deleteMetaData(integers[0].intValue());
             return null;
         }
 
         @Override
         protected void onPostExecute(Object result) {
-            mCallback.onPostResult();
         }
     }
 
     public static  class deleteByMetaDataTask extends AsyncTask<MetaDataEntity, Object, Object> {
+        MetaDataDao mDao;
+        public deleteByMetaDataTask(MetaDataDao dao) {
+            mDao = dao;
+        }
         @Override
         protected Object doInBackground(MetaDataEntity... metaDataEntities) {
-            deleteMetaDataEntity(metaDataEntities[0]);
+            mDao.deleteMetaData(metaDataEntities[0]);
             return null;
         }
     }
@@ -146,11 +162,11 @@ public class DatabaseTask {
         }
     }
 
-    private static List<MetaDataEntity> getAll() {
-        List<MetaDataEntity> ret = null;
-        if (mDatabase != null) {
+    private static LiveData<List<MetaDataEntity>>  getAll() {
+        LiveData<List<MetaDataEntity>> ret = null;
+        /*if (mDatabase != null) {
             ret = mDatabase.MetaDataDao().getAll();
-        }
+        }*/
         return ret;
     }
 

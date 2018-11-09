@@ -18,6 +18,7 @@
 package sm.com.camcollection.dialogs;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -34,8 +35,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import sm.com.camcollection.DialogListener;
+import sm.com.camcollection.MainActivity;
 import sm.com.camcollection.R;
-import sm.com.camcollection.data.DatabaseTask;
 import sm.com.camcollection.data.MetaDataDatabase;
 import sm.com.camcollection.data.MetaDataEntity;
 
@@ -45,11 +47,14 @@ public class AddMetaDataDialog extends DialogFragment {
     private MetaDataDatabase mDatabase;
     private boolean mCloseDialog;
     private boolean mVersionVisible;
+    private DialogListener mListener;
+    private int mPosition = 0;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
+        mPosition = getArguments().getInt(MainActivity.MAX_POSITION_ID);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         mRootView = inflater.inflate(R.layout.dialog_add_metadata, null);
 
@@ -132,7 +137,7 @@ public class AddMetaDataDialog extends DialogFragment {
         return b ? 1 : 0;
     }
 
-    public void addMetaData() {
+    public MetaDataEntity addMetaData() {
 
         SeekBar seekBarLength = (SeekBar) mRootView.findViewById(R.id.seekBarLength);
         CheckBox hasNumbersCheckBox = (CheckBox) mRootView.findViewById(R.id.checkBoxNumbers);
@@ -157,7 +162,7 @@ public class AddMetaDataDialog extends DialogFragment {
             toast.show();
         } else {
 
-            MetaDataEntity metaDataToAdd = new MetaDataEntity(0, 0,
+            MetaDataEntity metaDataToAdd = new MetaDataEntity(0, mPosition,
                     domain.getText().toString(),
                     username.getText().toString(),
                     seekBarLength.getProgress() + 4,
@@ -166,17 +171,27 @@ public class AddMetaDataDialog extends DialogFragment {
                     boolToInt(hasLettersUpCheckBox.isChecked()),
                     boolToInt(hasLettersLowCheckBox.isChecked()),
                     iterationToAdd);
-
-            DatabaseTask.InsertTask insertTask = new DatabaseTask.InsertTask();
-            insertTask.execute(metaDataToAdd);
-
-            getActivity().recreate();
-
+            //getActivity().recreate();
             mCloseDialog = true;
+            return metaDataToAdd;
 
         }
+        return null;
 
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // Verify that the host activity implements the callback interface
+        try {
+            // Instantiate the EditNameDialogListener so we can send events to the host
+            mListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(context.toString()
+                    + " must implement EditNameDialogListener");
+        }
     }
 
     @Override
@@ -188,8 +203,13 @@ public class AddMetaDataDialog extends DialogFragment {
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    addMetaData();
+                    MetaDataEntity entity = addMetaData();
                     if (mCloseDialog) {
+                        if (entity != null) {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(DialogListener.ENTITY_KEY, entity);
+                            mListener.onDialogResponse(DialogListener.ADD_RECORD_SUCCESS, bundle);
+                        }
                         dismiss();
                     }
 

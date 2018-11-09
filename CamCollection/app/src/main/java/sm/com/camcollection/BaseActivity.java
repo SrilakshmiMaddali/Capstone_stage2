@@ -1,5 +1,8 @@
 package sm.com.camcollection;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +21,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import sm.com.camcollection.data.MetaDataViewModel;
+
 public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     // delay to launch nav drawer item, to allow close animation to play
@@ -26,12 +31,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     // different Activities of the app through the Nav Drawer
     static final int MAIN_CONTENT_FADEOUT_DURATION = 150;
     static final int MAIN_CONTENT_FADEIN_DURATION = 250;
+
+    static final String DELETE_ALL_TASK_ACTION = "delete_all_action";
     // Helper
     private Handler mHandler;
 
     // Navigation drawer:
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
+    public MetaDataViewModel mMetaDataViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -16,7 +16,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation"></activity>
         <activity
             android:name=".SplashScreenActivity"
             android:theme="@style/SplashTheme">
@@ -58,6 +59,8 @@
         </receiver>
         <service android:name=".UpdateWidgetService" />
         <service android:name="sm.com.camcollection.FrequentWidgetUpdateService" />
+
+        <receiver android:name=".MainActivity$MetaDataTaskReceiver"></receiver>
     </application>
 
 </manifest>

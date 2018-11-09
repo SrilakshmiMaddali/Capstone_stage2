@@ -7,12 +7,14 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 
+import sm.com.camcollection.MainActivity;
+
 @Database(entities = {MetaDataEntity.class}, version = 3, exportSchema=false)
 public abstract class MetaDataDatabase extends RoomDatabase {
 
     public abstract MetaDataDao MetaDataDao();
 
-    private static volatile MetaDataDatabase INSTANCE;
+    public static volatile MetaDataDatabase INSTANCE;
 
     static final Migration MIGRATION_1_2 = new Migration(1,2) {
         @Override
@@ -37,6 +39,7 @@ public abstract class MetaDataDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             MetaDataDatabase.class, "pass_data_database_1")
                             .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                            .allowMainThreadQueries()
                             .build();
                 }
             }

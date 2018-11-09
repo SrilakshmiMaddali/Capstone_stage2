@@ -34,42 +34,44 @@ public class ListViewDataAdapter extends RecyclerView.Adapter<ListViewDataAdapte
     @Override
     public void onBindViewHolder(MetaDataViewHolder holder, int position) {
 
-        ColorGenerator generator = ColorGenerator.MATERIAL;
+        if (metaDataList != null) {
+            ColorGenerator generator = ColorGenerator.MATERIAL;
 
-        holder.domain.setText(metaDataList.get(position).getDomain());
-        holder.length.setText(String.valueOf(metaDataList.get(position).getLength()));
-        holder.iteration.setText(String.valueOf(metaDataList.get(position).getPwVersion()));
+            holder.domain.setText(metaDataList.get(position).getDomain());
+            holder.length.setText(String.valueOf(metaDataList.get(position).getLength()));
+            holder.iteration.setText(String.valueOf(metaDataList.get(position).getPwVersion()));
 
-        if (metaDataList.get(position).getUserName().length() == 0) {
-            holder.username.setText("-");
-        } else {
-            holder.username.setText(metaDataList.get(position).getUserName());
+            if (metaDataList.get(position).getUserName().length() == 0) {
+                holder.username.setText("-");
+            } else {
+                holder.username.setText(metaDataList.get(position).getUserName());
+            }
+
+            String characterset = "";
+
+            if (metaDataList.get(position).getHasLetterLow() == 1) {
+                characterset += "abc";
+            }
+
+            if (metaDataList.get(position).getHasLettersUp() == 1) {
+                characterset += " ABC";
+            }
+
+            if (metaDataList.get(position).getHasNumber() == 1) {
+                characterset += " 123";
+            }
+
+            if (metaDataList.get(position).getHasSymbols() == 1) {
+                characterset += " +!#";
+            }
+
+            holder.characterset.setText(characterset);
+
+            int color = generator.getColor(metaDataList.get(position).getDomain());
+            TextDrawable textDrawable = TextDrawable.builder()
+                    .buildRound(String.valueOf(metaDataList.get(position).getDomain().toUpperCase().charAt(0)), color);
+            holder.imageView.setImageDrawable(textDrawable);
         }
-
-        String characterset = "";
-
-        if (metaDataList.get(position).getHasLetterLow() == 1) {
-            characterset += "abc";
-        }
-
-        if (metaDataList.get(position).getHasLettersUp() == 1) {
-            characterset += " ABC";
-        }
-
-        if (metaDataList.get(position).getHasNumber() == 1) {
-            characterset += " 123";
-        }
-
-        if (metaDataList.get(position).getHasSymbols() == 1) {
-            characterset += " +!#";
-        }
-
-        holder.characterset.setText(characterset);
-
-        int color = generator.getColor(metaDataList.get(position).getDomain());
-        TextDrawable textDrawable = TextDrawable.builder()
-                .buildRound(String.valueOf(metaDataList.get(position).getDomain().toUpperCase().charAt(0)), color);
-        holder.imageView.setImageDrawable(textDrawable);
     }
 
     @Override
@@ -79,58 +81,81 @@ public class ListViewDataAdapter extends RecyclerView.Adapter<ListViewDataAdapte
 
     @Override
     public int getItemCount() {
-        return metaDataList.size();
+        int i = 0;
+        if (metaDataList != null) {
+            i = metaDataList.size();
+        }
+        return i;
     }
 
     public void setMetaDataList(List<MetaDataEntity> metaDataList) {
-        this.metaDataList = metaDataList;
+        if (metaDataList != null) {
+            this.metaDataList = metaDataList;
+        }
     }
 
     public MetaDataEntity removeItem(int position) {
-        final MetaDataEntity metaData = metaDataList.remove(position);
-        notifyItemRemoved(position);
+        MetaDataEntity metaData = null;
+        if (metaDataList != null) {
+            metaData = metaDataList.remove(position);
+            notifyItemRemoved(position);
+        }
         return metaData;
     }
 
     public void addItem(int position, MetaDataEntity metaData) {
-        metaDataList.add(position, metaData);
-        notifyItemInserted(position);
+        if (metaDataList != null) {
+            metaDataList.add(position, metaData);
+            notifyItemInserted(position);
+        }
     }
 
     public MetaDataEntity getItem(int position) {
-        return metaDataList.get(position);
+        MetaDataEntity metaData = null;
+        if (metaDataList != null) {
+            metaData = metaDataList.get(position);
+        }
+        return metaData;
     }
 
     public void moveItem(int fromPosition, int toPosition) {
-        final MetaDataEntity metaData = metaDataList.remove(fromPosition);
-        metaDataList.add(toPosition, metaData);
-        notifyItemMoved(fromPosition, toPosition);
+        if (metaDataList != null) {
+            final MetaDataEntity metaData = metaDataList.remove(fromPosition);
+            metaDataList.add(toPosition, metaData);
+            notifyItemMoved(fromPosition, toPosition);
+        }
     }
 
     private void applyAndAnimateRemovals(List<MetaDataEntity> newMetaData) {
-        for (int i = metaDataList.size() - 1; i >= 0; i--) {
-            final MetaDataEntity metaData = metaDataList.get(i);
-            if (!newMetaData.contains(metaData)) {
-                removeItem(i);
+        if (metaDataList != null) {
+            for (int i = metaDataList.size() - 1; i >= 0; i--) {
+                final MetaDataEntity metaData = metaDataList.get(i);
+                if (!newMetaData.contains(metaData)) {
+                    removeItem(i);
+                }
             }
         }
     }
 
     private void applyAndAnimateAdditions(List<MetaDataEntity> newMetaData) {
-        for (int i = 0, count = newMetaData.size(); i < count; i++) {
-            final MetaDataEntity metaData = newMetaData.get(i);
-            if (!metaDataList.contains(metaData)) {
-                addItem(i, metaData);
+        if (metaDataList != null) {
+            for (int i = 0, count = newMetaData.size(); i < count; i++) {
+                final MetaDataEntity metaData = newMetaData.get(i);
+                if (!metaDataList.contains(metaData)) {
+                    addItem(i, metaData);
+                }
             }
         }
     }
 
     private void applyAndAnimateMovedItems(List<MetaDataEntity> newMetaData) {
-        for (int toPosition = newMetaData.size() - 1; toPosition >= 0; toPosition--) {
-            final MetaDataEntity metaData = newMetaData.get(toPosition);
-            final int fromPosition = metaDataList.indexOf(metaData);
-            if (fromPosition >= 0 && fromPosition != toPosition) {
-                moveItem(fromPosition, toPosition);
+        if (metaDataList != null) {
+            for (int toPosition = newMetaData.size() - 1; toPosition >= 0; toPosition--) {
+                final MetaDataEntity metaData = newMetaData.get(toPosition);
+                final int fromPosition = metaDataList.indexOf(metaData);
+                if (fromPosition >= 0 && fromPosition != toPosition) {
+                    moveItem(fromPosition, toPosition);
+                }
             }
         }
     }

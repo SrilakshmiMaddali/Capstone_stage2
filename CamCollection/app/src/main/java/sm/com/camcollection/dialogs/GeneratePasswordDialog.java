@@ -19,6 +19,7 @@ package sm.com.camcollection.dialogs;
 
 
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.util.Log;
@@ -46,6 +48,7 @@ import sm.com.camcollection.R;
 import sm.com.camcollection.data.DatabaseTask;
 import sm.com.camcollection.data.MetaDataDatabase;
 import sm.com.camcollection.data.MetaDataEntity;
+import sm.com.camcollection.data.MetaDataViewModel;
 import sm.com.camcollection.generator.PasswordGeneratorTask;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
@@ -188,22 +191,8 @@ public class GeneratePasswordDialog extends DialogFragment {
     public void generatePassword() {
 
         EditText editTextMasterpassword = (EditText) mRootView.findViewById(R.id.editTextMasterpassword);
-
-        DatabaseTask.GetMetaDataById task = new DatabaseTask.GetMetaDataById(new DatabaseTask.Callback() {
-            @Override
-            public void onPostResult(List<MetaDataEntity> entities) {
-
-            }
-
-            @Override
-            public void onPostResult(MetaDataEntity entity) {
-                mMetaDataEntity = entity;
-            }
-
-            @Override
-            public void onPostResult() {}
-        });
-        task.execute(mPosition);
+        MetaDataViewModel mMetaDataViewModel = ViewModelProviders.of(this).get(MetaDataViewModel.class);
+        mMetaDataEntity = mMetaDataViewModel.getMetaDataById(mPosition);
 
         String deviceID;
         if (bindToDevice_enabled) {

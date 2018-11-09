@@ -2,24 +2,20 @@ package sm.com.camcollection;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import sm.com.camcollection.data.DatabaseTask;
-import sm.com.camcollection.data.MetaDataDao;
-import sm.com.camcollection.data.MetaDataDatabase;
-import sm.com.camcollection.dialogs.BenchmarkDialog;
+import sm.com.camcollection.data.MetaDataViewModel;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -88,14 +84,17 @@ public class SettingsActivity extends BaseActivity {
     }
 
 
+
+
     /**
      * This fragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
+    public static class GeneralPreferenceFragment extends PreferenceFragment implements DialogListener {
 
         Activity activity;
+        public MetaDataViewModel mViewModel;
 
         @Override
         public void onAttach(Activity activity) {
@@ -107,7 +106,6 @@ public class SettingsActivity extends BaseActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
-
             bindPreferenceSummaryToValue(findPreference("hash_algorithm"));
             Preference reset = findPreference("pref_reset_list");
             reset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -120,8 +118,7 @@ public class SettingsActivity extends BaseActivity {
                             .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    DatabaseTask.DeleteAllTask task = new DatabaseTask.DeleteAllTask();
-                                    task.execute();
+                                    onDialogResponse(DELETE_ALL, null);
                                     Toast.makeText(getActivity(), getString(R.string.delete_dialog_success), Toast.LENGTH_SHORT).show();
                                 }
                             })
@@ -142,6 +139,14 @@ public class SettingsActivity extends BaseActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+
+        @Override
+        public void onDialogResponse(int resultCode, Bundle data) {
+            if (resultCode == DELETE_ALL) {
+                Intent intent = new Intent(DELETE_ALL_TASK_ACTION);
+                LocalBroadcastManager.getInstance(activity).sendBroadcast(intent);
+            }
         }
 
     }
