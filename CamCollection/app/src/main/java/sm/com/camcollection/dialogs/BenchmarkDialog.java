@@ -52,8 +52,8 @@ public class BenchmarkDialog extends DialogFragment {
 
         Bundle bundle = getArguments();
 
-        mHashAlgorithm = bundle.getString("hash_algorithm");
-        mIterations = bundle.getInt("number_iterations");
+        mHashAlgorithm = bundle.getString(getString(R.string.str_hash_algorithm));
+        mIterations = bundle.getInt(getString(R.string.str_number_iterations));
 
         builder.setView(mRootView);
         builder.setIcon(R.mipmap.ic_drawer);

@@ -209,12 +209,12 @@ public class MainActivity extends BaseActivity implements DialogListener {
                             return;
                         }
 
-                        bundle.putInt("position", temp.getPositionId());
-                        bundle.putString("hash_algorithm", hash_algorithm);
-                        bundle.putBoolean("clipboard_enabled", clipboard_enabled);
-                        bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
-                        bundle.putInt("number_iterations", number_iterations);
-                        bundle.putParcelable("entity",temp);
+                        bundle.putInt(getString(R.string.str_position), temp.getPositionId());
+                        bundle.putString(getString(R.string.str_hash_algorithm), hash_algorithm);
+                        bundle.putBoolean(getString(R.string.str_clipboard_enabled), clipboard_enabled);
+                        bundle.putBoolean(getString(R.string.str_bindToDevice_enabled), bindToDevice_enabled);
+                        bundle.putInt(getString(R.string.str_number_iterations), number_iterations);
+                        bundle.putParcelable(getString(R.string.str_entity),temp);
 
 
                         MetaDataEntity entity = mMetaDataViewModel.getMetaDataById(temp.getPositionId());
@@ -224,7 +224,7 @@ public class MainActivity extends BaseActivity implements DialogListener {
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             GeneratePasswordDialog generatePasswordDialog = new GeneratePasswordDialog();
                             generatePasswordDialog.setArguments(bundle);
-                            generatePasswordDialog.show(fragmentManager, "GeneratePasswordDialog");
+                            generatePasswordDialog.show(fragmentManager, getString(R.string.str_generatepassword_dialog_tag));
                         }
                     }
 
@@ -236,17 +236,17 @@ public class MainActivity extends BaseActivity implements DialogListener {
                         //Gets ID for look up in DB
                         MetaDataEntity temp = mAdapter.getItem(position);
 
-                        bundle.putInt("position", position);
-                        bundle.putInt("id", temp.getId());
-                        bundle.putString("hash_algorithm", hash_algorithm);
-                        bundle.putInt("number_iterations", number_iterations);
-                        bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
+                        bundle.putInt(getString(R.string.str_position), position);
+                        bundle.putInt(getString(R.string.str_id), temp.getId());
+                        bundle.putString(getString(R.string.str_hash_algorithm), hash_algorithm);
+                        bundle.putInt(getString(R.string.str_number_iterations), number_iterations);
+                        bundle.putBoolean(getString(R.string.str_bindToDevice_enabled), bindToDevice_enabled);
                         MetaDataEntity entity = mMetaDataViewModel.getMetaDataById(position);
-                        bundle.putParcelable("entity", entity);
+                        bundle.putParcelable(getString(R.string.str_entity), entity);
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         UpdateMetadataDialog updateMetadataDialog = new UpdateMetadataDialog();
                         updateMetadataDialog.setArguments(bundle);
-                        updateMetadataDialog.show(fragmentManager, "UpdateMetadataDialog");
+                        updateMetadataDialog.show(fragmentManager, getString(R.string.str_updatedialog_tag));
                     }
                 })
         );
@@ -286,7 +286,7 @@ public class MainActivity extends BaseActivity implements DialogListener {
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     AddMetaDataDialog addMetaDataDialog = new AddMetaDataDialog();
                     addMetaDataDialog.setArguments(bundle);
-                    addMetaDataDialog.show(fragmentManager, "AddMetaDataDialog");
+                    addMetaDataDialog.show(fragmentManager, getString(R.string.str_addMetadata_tag));
                 }
             });
 
@@ -353,17 +353,17 @@ public class MainActivity extends BaseActivity implements DialogListener {
 
     public void loadPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        clipboard_enabled = sharedPreferences.getBoolean("clipboard_enabled", false);
-        bindToDevice_enabled = sharedPreferences.getBoolean("bindToDevice_enabled", false);
-        hash_algorithm = sharedPreferences.getString("hash_algorithm", "SHA256");
-        String tempIterations = sharedPreferences.getString("hash_iterations", "1000");
+        clipboard_enabled = sharedPreferences.getBoolean(getString(R.string.str_clipboard_enabled), false);
+        bindToDevice_enabled = sharedPreferences.getBoolean(getString(R.string.str_bindToDevice_enabled), false);
+        hash_algorithm = sharedPreferences.getString(getString(R.string.str_hash_algorithm), "SHA256");
+        String tempIterations = sharedPreferences.getString(getString(R.string.str_hash_iterations), "1000");
         number_iterations = Integer.parseInt(tempIterations);
     }
 
     private void fetchRemoteConfig() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean copyToClipboard = mFirebaseRemoteConfig.getBoolean(COPY_TO_CLIPBOARD);
-        sharedPreferences.edit().putBoolean("clipboard_enabled", copyToClipboard).commit();
+        sharedPreferences.edit().putBoolean(getString(R.string.str_clipboard_enabled), copyToClipboard).commit();
         String numberHashIterations = mFirebaseRemoteConfig.getString(NUMBEROF_HASH_ITERATIONS);
         // remove ads, is to control ads remotely.
         remove_ads = mFirebaseRemoteConfig.getBoolean(REMOVE_ADS);
@@ -389,14 +389,14 @@ public class MainActivity extends BaseActivity implements DialogListener {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Fetch Succeeded",
+                            Toast.makeText(MainActivity.this, getString(R.string.str_fetch_succeeded),
                                     Toast.LENGTH_SHORT).show();
 
                             // After config data is successfully fetched, it must be activated before newly fetched
                             // values are returned.
                             mFirebaseRemoteConfig.activateFetched();
                         } else {
-                            Toast.makeText(MainActivity.this, "Fetch Failed",
+                            Toast.makeText(MainActivity.this, getString(R.string.str_fetch_failed),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }

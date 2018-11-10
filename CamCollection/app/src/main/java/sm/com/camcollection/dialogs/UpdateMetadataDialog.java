@@ -75,13 +75,13 @@ public class UpdateMetadataDialog extends DialogFragment {
 
         Bundle bundle = getArguments();
 
-        mPosition = bundle.getInt("position");
-        mId = bundle.getInt("id");
-        hash_algorithm = bundle.getString("hash_algorithm");
-        bindToDevice_enabled = bundle.getBoolean("bindToDevice_enabled");
-        mMetaDataEntity = bundle.getParcelable("entity");
+        mPosition = bundle.getInt(getString(R.string.str_position));
+        mId = bundle.getInt(getString(R.string.str_id));
+        hash_algorithm = bundle.getString(getString(R.string.str_hash_algorithm));
+        bindToDevice_enabled = bundle.getBoolean(getString(R.string.str_bindToDevice_enabled));
+        mMetaDataEntity = bundle.getParcelable(getString(R.string.str_entity));
         mOldMetaDataEntity = mMetaDataEntity;
-        number_iterations = bundle.getInt("number_iterations");
+        number_iterations = bundle.getInt(getString(R.string.str_number_iterations));
 
         builder.setView(mRootView);
         setUpData();
@@ -262,23 +262,23 @@ public class UpdateMetadataDialog extends DialogFragment {
             Toast.makeText(getActivity(), getString(R.string.added_message), Toast.LENGTH_SHORT).show();
 
             Bundle bundle = new Bundle();
-            bundle.putInt("position", mPosition);
-            bundle.putString("hash_algorithm", hash_algorithm);
-            bundle.putInt("number_iterations", number_iterations);
-            bundle.putBoolean("bindToDevice_enabled", bindToDevice_enabled);
-            bundle.putString("olddomain", mOldMetaDataEntity.getDomain());
-            bundle.putString("oldusername", mOldMetaDataEntity.getUserName());
+            bundle.putInt(getString(R.string.str_position), mPosition);
+            bundle.putString(getString(R.string.str_hash_algorithm), hash_algorithm);
+            bundle.putInt(getString(R.string.str_number_iterations), number_iterations);
+            bundle.putBoolean(getString(R.string.str_bindToDevice_enabled), bindToDevice_enabled);
+            bundle.putString(getString(R.string.str_olddomain), mOldMetaDataEntity.getDomain());
+            bundle.putString(getString(R.string.str_oldusername), mOldMetaDataEntity.getUserName());
 
-            bundle.putInt("oldlength", mOldMetaDataEntity.getLength());
-            bundle.putInt("oldlettersup", mOldMetaDataEntity.getHasLettersUp());
-            bundle.putInt("oldletterslow", mOldMetaDataEntity.getHasLetterLow());
-            bundle.putInt("oldsymbols", mOldMetaDataEntity.getHasSymbols());
-            bundle.putInt("oldnumbers", mOldMetaDataEntity.getHasNumber());
-            bundle.putInt("olditeration", mOldMetaDataEntity.getPwVersion());
+            bundle.putInt(getString(R.string.str_oldlength), mOldMetaDataEntity.getLength());
+            bundle.putInt(getString(R.string.str_oldlettersup), mOldMetaDataEntity.getHasLettersUp());
+            bundle.putInt(getString(R.string.str_oldletterslow), mOldMetaDataEntity.getHasLetterLow());
+            bundle.putInt(getString(R.string.str_oldsymbols), mOldMetaDataEntity.getHasSymbols());
+            bundle.putInt(getString(R.string.str_oldnumbers), mOldMetaDataEntity.getHasNumber());
+            bundle.putInt(getString(R.string.str_olditeration), mOldMetaDataEntity.getPwVersion());
             FragmentManager fragmentManager = getFragmentManager();
             UpdatePasswordDialog updatePasswordDialog = new UpdatePasswordDialog();
             updatePasswordDialog.setArguments(bundle);
-            updatePasswordDialog.show(fragmentManager, "UpdatePasswordDialog");
+            updatePasswordDialog.show(fragmentManager, getString(R.string.str_updatePassword_dialog_tag));
 
             closeDialog = true;
         }

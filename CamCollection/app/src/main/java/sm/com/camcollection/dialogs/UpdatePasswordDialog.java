@@ -89,11 +89,11 @@ public class UpdatePasswordDialog extends DialogFragment {
 
         Bundle bundle = getArguments();
 
-        position = bundle.getInt("position");
-        bindToDevice_enabled = bundle.getBoolean("bindToDevice_enabled");
-        hashAlgorithm = bundle.getString("hash_algorithm");
+        position = bundle.getInt(getString(R.string.str_position));
+        bindToDevice_enabled = bundle.getBoolean(getString(R.string.str_bindToDevice_enabled));
+        hashAlgorithm = bundle.getString(getString(R.string.str_hash_algorithm));
         setOldMetaData(bundle);
-        number_iterations = bundle.getInt("number_iterations");
+        number_iterations = bundle.getInt(getString(R.string.str_number_iterations));
 
         mDatabase = MetaDataDatabase.getDatabase(getActivity());
 
@@ -270,14 +270,14 @@ public class UpdatePasswordDialog extends DialogFragment {
 
     public void setOldMetaData(Bundle bundle) {
         mOldMetaDataEntity = new MetaDataEntity(0, 0,
-                bundle.getString("olddomain"),
-                bundle.getString("oldusername"),
-                bundle.getInt("oldlength"),
-                bundle.getInt("oldnumbers"),
-                bundle.getInt("oldsymbols"),
-                bundle.getInt("oldlettersup"),
-                bundle.getInt("oldletterslow"),
-                bundle.getInt("olditeration")
+                bundle.getString(getString(R.string.str_olddomain)),
+                bundle.getString(getString(R.string.str_oldusername)),
+                bundle.getInt(getString(R.string.str_oldlength)),
+                bundle.getInt(getString(R.string.str_oldnumbers)),
+                bundle.getInt(getString(R.string.str_oldsymbols)),
+                bundle.getInt(getString(R.string.str_oldlettersup)),
+                bundle.getInt(getString(R.string.str_oldletterslow)),
+                bundle.getInt(getString(R.string.str_olditeration))
         );
 
     }

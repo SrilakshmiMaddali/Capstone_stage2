@@ -140,4 +140,28 @@
     <string name="passwordCard_desc">Password card image</string>
     <string name="versioninfo_desc">Version info image button</string>
     <string name="card_view_password_item">Card description of password item</string>
+
+    <string name="str_position">position</string>
+    <string name="str_id">id</string>
+    <string name="str_hash_algorithm">hash_algorithm</string>
+    <string name="str_clipboard_enabled">clipboard_enabled</string>
+    <string name="str_bindToDevice_enabled">bindToDevice_enabled</string>
+    <string name="str_number_iterations">number_iterations</string>
+    <string name="str_hash_iterations">hash_iterations</string>
+    <string name="str_entity">entity</string>
+    <string name="str_updatedialog_tag">UpdateMetadataDialog</string>
+    <string name="str_addMetadata_tag">AddMetaDataDialog</string>
+    <string name="str_updatePassword_dialog_tag">UpdatePasswordDialog</string>
+    <string name="str_generatepassword_dialog_tag">GeneratePasswordDialog</string>
+    <string name="str_olddomain">olddomain</string>
+    <string name="str_oldusername">oldusername</string>
+    <string name="str_oldlength">oldlength</string>
+    <string name="str_oldlettersup">oldlettersup</string>
+    <string name="str_oldletterslow">oldletterslow</string>
+    <string name="str_oldsymbols">oldsymbols</string>
+    <string name="str_oldnumbers">oldnumbers</string>
+    <string name="str_olditeration">olditeration</string>
+    <string name="str_fetch_succeeded">Fetch Succeeded</string>
+    <string name="str_fetch_failed">Fetch Failed</string>
+    <string name="str_pref_reset_list">pref_reset_list</string>
 </resources>

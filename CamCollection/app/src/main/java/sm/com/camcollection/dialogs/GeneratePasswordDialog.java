@@ -83,13 +83,13 @@ public class GeneratePasswordDialog extends DialogFragment {
 
         Bundle bundle = getArguments();
 
-        mPosition = bundle.getInt("position");
+        mPosition = bundle.getInt(getString(R.string.str_position));
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        clipboard_enabled = sharedPreferences.getBoolean("clipboard_enabled", false);
-        bindToDevice_enabled = bundle.getBoolean("bindToDevice_enabled");
-        hashAlgorithm = bundle.getString("hash_algorithm");
-        number_iterations = bundle.getInt("number_iterations");
-        mMetaDataEntity = bundle.getParcelable("entity");
+        clipboard_enabled = sharedPreferences.getBoolean(getString(R.string.str_clipboard_enabled), false);
+        bindToDevice_enabled = bundle.getBoolean(getString(R.string.str_bindToDevice_enabled));
+        hashAlgorithm = bundle.getString(getString(R.string.str_hash_algorithm));
+        number_iterations = bundle.getInt(getString(R.string.str_number_iterations));
+        mMetaDataEntity = bundle.getParcelable(getString(R.string.str_entity));
         visibility = false;
 
         mSpinner = (ProgressBar) mRootView.findViewById(R.id.progressBar);

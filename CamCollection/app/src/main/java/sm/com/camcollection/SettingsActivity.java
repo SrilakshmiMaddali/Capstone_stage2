@@ -106,8 +106,8 @@ public class SettingsActivity extends BaseActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
-            bindPreferenceSummaryToValue(findPreference("hash_algorithm"));
-            Preference reset = findPreference("pref_reset_list");
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.str_hash_algorithm)));
+            Preference reset = findPreference(getString(R.string.str_pref_reset_list));
             reset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
