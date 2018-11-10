@@ -15,45 +15,33 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import sm.com.camcollection.data.DatabaseTask;
+import sm.com.camcollection.data.MetaDataDatabase;
 import sm.com.camcollection.data.MetaDataEntity;
 
 public class FrequentWidgetUpdateService extends IntentService {
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      */
+
     public FrequentWidgetUpdateService() {
         super("FrequentWidgetUpdateService");
     }
 
     @Override
     protected void onHandleIntent(@Nullable final Intent intent) {
-        DatabaseTask.GetAllTask getAllTask = new DatabaseTask.GetAllTask(new DatabaseTask.Callback() {
-
-            @Override
-            public void onPostResult(List<MetaDataEntity> entities) {
-                if (entities != null) {
-                    Collections.sort(entities, new Comparator<MetaDataEntity>() {
-                        @Override
-                        public int compare(MetaDataEntity o1, MetaDataEntity o2) {
-                            int fre1 = o1.getFrequency();
-                            int fre2 = o2.getFrequency();
-                            return fre1 - fre2;
-                        }
-                    });
-                    update(entities, intent);
+        MetaDataDatabase db = MetaDataDatabase.getDatabase(this);
+        List<MetaDataEntity> entities = db.MetaDataDao().getAllRecords();
+        if (entities != null) {
+            Collections.sort(entities, new Comparator<MetaDataEntity>() {
+                @Override
+                public int compare(MetaDataEntity o1, MetaDataEntity o2) {
+                    int fre1 = o1.getFrequency();
+                    int fre2 = o2.getFrequency();
+                    return fre1 - fre2;
                 }
-            }
-            @Override
-            public void onPostResult(MetaDataEntity entity) {
-            }
-
-            @Override
-            public void onPostResult() {
-            }
-        });
-        getAllTask.execute();
-
+            });
+            update(entities, intent);
+        }
     }
 
     private void update(List<MetaDataEntity> list, Intent intent) {

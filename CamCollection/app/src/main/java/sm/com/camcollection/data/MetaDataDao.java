@@ -22,6 +22,9 @@ public interface MetaDataDao {
     @Query("SELECT * FROM pass_data_table_1")
     LiveData<List<MetaDataEntity>>  getAll();
 
+    @Query("SELECT * FROM pass_data_table_1")
+    List<MetaDataEntity>  getAllRecords();
+
     @Query("SELECT * FROM pass_data_table_1 WHERE positionId = :metaDataId")
     MetaDataEntity getMetaDatabyId(int metaDataId);
 
