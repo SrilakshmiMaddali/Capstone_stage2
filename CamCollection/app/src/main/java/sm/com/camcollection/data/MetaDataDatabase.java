@@ -40,6 +40,7 @@ public abstract class MetaDataDatabase extends RoomDatabase {
                             MetaDataDatabase.class, "pass_data_database_1")
                             .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                             .allowMainThreadQueries()
+                            .addCallback(MainActivity.sRoomDatabaseCallback)
                             .build();
                 }
             }

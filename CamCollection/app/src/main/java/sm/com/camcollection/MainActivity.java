@@ -449,7 +449,6 @@ public class MainActivity extends BaseActivity implements DialogListener {
         }
         @Override
         protected Void doInBackground(final Void... params) {
-            dao.deleteAll();
             MetaDataEntity meta1 = new MetaDataEntity(1, 0, "example.email.com", "example.name@email.com", 15, 1, 1, 1, 1, 1);
             dao.insert(meta1);
             return null;
