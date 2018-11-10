@@ -208,7 +208,7 @@ public class AddMetaDataDialog extends DialogFragment {
                         if (entity != null) {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable(DialogListener.ENTITY_KEY, entity);
-                            mListener.onDialogResponse(DialogListener.ADD_RECORD_SUCCESS, bundle);
+                            mListener.onfinisheditdialog(DialogListener.ADD_RECORD_SUCCESS, bundle);
                         }
                         dismiss();
                     }

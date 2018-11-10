@@ -257,7 +257,7 @@ public class UpdateMetadataDialog extends DialogFragment {
                     boolToInt(checkBoxLettersUpUpdate.isChecked()),
                     boolToInt(checkBoxLettersLowUpdate.isChecked()),
                     tempIteration));
-            mListener.onDialogResponse(DialogListener.UPDATE_METADATA, updateBundle);
+            mListener.onfinisheditdialog(DialogListener.UPDATE_METADATA, updateBundle);
 
             Toast.makeText(getActivity(), getString(R.string.added_message), Toast.LENGTH_SHORT).show();
 

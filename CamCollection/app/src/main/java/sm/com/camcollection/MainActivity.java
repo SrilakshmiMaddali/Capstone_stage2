@@ -428,7 +428,7 @@ public class MainActivity extends BaseActivity implements DialogListener {
     };
 
     @Override
-    public void onDialogResponse(int resultCode, Bundle data) {
+    public void onfinisheditdialog(int resultCode, Bundle data) {
         MetaDataEntity entity;
         switch (resultCode) {
             case ADD_RECORD_SUCCESS:

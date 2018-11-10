@@ -7,5 +7,5 @@ public interface DialogListener {
     public static final int UPDATE_METADATA = 101;
     public static final int DELETE_ALL = 102;
     public static final String ENTITY_KEY = "entity_key";
-    void onDialogResponse(int resultCode, Bundle data);
+    void onfinisheditdialog(int resultCode, Bundle data);
 }

@@ -118,7 +118,7 @@ public class SettingsActivity extends BaseActivity {
                             .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    onDialogResponse(DELETE_ALL, null);
+                                    onfinisheditdialog(DELETE_ALL, null);
                                     Toast.makeText(getActivity(), getString(R.string.delete_dialog_success), Toast.LENGTH_SHORT).show();
                                 }
                             })
@@ -142,7 +142,7 @@ public class SettingsActivity extends BaseActivity {
         }
 
         @Override
-        public void onDialogResponse(int resultCode, Bundle data) {
+        public void onfinisheditdialog(int resultCode, Bundle data) {
             if (resultCode == DELETE_ALL) {
                 Intent intent = new Intent(DELETE_ALL_TASK_ACTION);
                 LocalBroadcastManager.getInstance(activity).sendBroadcast(intent);
